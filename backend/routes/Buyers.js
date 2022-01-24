@@ -64,6 +64,17 @@ router.get("/getUser",(req,res)=>{
     });
 });
 
+router.post("/addToWallet",(req,res)=>{
+    const email = req.body.email;
+    const wallet = req.body.wallet;
+
+    Buyer.findOne({ email }).then(buyer => {
+        buyer.wallet = parseInt(buyer.wallet)+parseInt(wallet);
+        buyer.save();
+        res.send(buyer);
+    });
+});
+
 //POST request 
 //Login
 router.post("/login", (req, res) => {
