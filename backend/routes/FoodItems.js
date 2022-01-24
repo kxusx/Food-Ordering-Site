@@ -1,4 +1,5 @@
 var express = require("express");
+const foodItems = require("../models/foodItems.js");
 var router = express.Router();
 
 // Load Food Items model
@@ -16,18 +17,19 @@ router.get("/", function (req, res) {
 });
 
 router.post("/addFoodItems", (req, res) => {
-    const newFoodItems = new Buyer({
+    const newFoodItems = new FoodItems({
         shopName: req.body.shopName,
         price: req.body.price,
         veg: req.body.veg,
         tag: req.body.tag,
     });
 
-    newBuyer.save()
-        .then(Buyer => {
-            res.status(200).json(Buyer);
+    newFoodItems.save()
+        .then(FoodItems => {
+            res.status(200).json(FoodItems);
         })
         .catch(err => {
             res.status(400).send(err);
         });
 });
+module.exports = router;

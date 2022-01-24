@@ -6,10 +6,13 @@ const foodItemsSchema = new Schema({
 		type: String,
 		required: true,
 	},
+    foodName: {
+        type:String,
+        required:true,
+    },
 	price: {
 		type: Number,
 		required: true,
-		unique: true
 	},
 	veg: {
 		type: Number,
