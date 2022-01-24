@@ -10,7 +10,8 @@ import NavbarBuyer from "./components/templates/NavbarBuyer"
 import Profile from "./components/users/Profile";
 import BuyerProfile from "./components/common/buyerProfile";
 import BuyerSearch from "./components/common/buyerSearch";
-import BuyerWallet from "/components/common/buyerWallet";
+import BuyerWallet from "./components/common/buyerWallet";
+import BuyerDashboard from "./components/common/buyerDashboard";
 
 const Layout = () => {
   return (
@@ -45,8 +46,9 @@ function App() {
         </Route>
         <Route path="/" element={<LayoutBuyer />}>
           <Route path="buyerProfile" element={<BuyerProfile />} />
-          <Route path="buyerSearch" element={<buyerSearch />} />
-          <Route path="buyerSearch" element={<BuyerWallet />} />
+          <Route path="buyerSearch" element={<BuyerSearch />} />
+          <Route path="buyerWallet" element={<BuyerWallet />} />
+          <Route path="buyerDashboard" element={<BuyerDashboard/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -16,9 +16,9 @@ const Navbar = () => {
             variant="h6"
             component="div"
             sx={{ cursor: "pointer" }}
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/buyerDashboard")}
           >
-            Canteen Portal
+            Dashboard
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Button color="inherit" onClick={() => navigate("/buyerProfile")}>

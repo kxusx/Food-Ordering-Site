@@ -48,6 +48,7 @@ export default function SignIn() {
                     localStorage.setItem("batchName",response.data.batchName);
                     localStorage.setItem("contactNo",response.data.contactNo);
                     localStorage.setItem("age",response.data.age);
+                    localStorage.setItem("wallet",response.data.wallet);
 
 
                     alert("Logined Buyer");
