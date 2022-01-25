@@ -21,49 +21,133 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 const UsersList = (props) => {
-  const [users, setUsers] = useState([]);
-  const [sortedUsers, setSortedUsers] = useState([]);
-  const [sortName, setSortName] = useState(true);
-  const [searchText, setSearchText] = useState("");
+  const [foodItems, setFoodItems] = useState([]);
+  const [permFoodItems, setPermFoodItems] = useState([]);
+  const [min, setMin] = useState("");
+  const [max, setMax] = useState("");
+  const [shopNames, setShopNames] = useState([]);
+  const [chosenShopName, setChosenShopName] = useState("");
+  const [tags, setTags] = useState([]);
+  const [chosenTag,setChosenTag] = useState("");
+  const [veg, setVeg] = useState("");
+  const [chosenVeg, setChosenVeg] = useState("");
+  const [search, setSearch] = useState("");
+
+  const onChangeMin = (event) => {
+    setMin(event.target.value);
+  };
+
+  const onChangeMax = (event) => {
+    setMax(event.target.value);
+  };
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/user")
+      .get("http://localhost:4000/foodItems")
       .then((response) => {
-        setUsers(response.data);
-        setSortedUsers(response.data);
-        setSearchText("");
+        setFoodItems(response.data);
+        setPermFoodItems(response.data);
+        console.log(permFoodItems);
+
+        let listTags = [];
+        response.data.forEach((foodItem) => {
+          for (let j = 0; j < foodItem.tag.length; j++) {
+            //console.log("hf "+foodItem.tag.length+ foodItem.tag);
+            if (!listTags.includes(foodItem.tag[j])) {
+                listTags.push(foodItem.tag[j]);
+            }
+          }
+        });
+
+        //   response.data.forEach((foodItem) => {
+        //   foodItem.tag.forEach((tage) => {
+        //     if (!listTags.includes(tage)) {
+        //       listTags.push(tage);
+        //     }
+        //   });
+        // });
+
+        let listShopNames = [];
+        response.data.forEach((foodItem) => {
+          if (!listShopNames.includes(foodItem.shopName)) {
+            listShopNames.push(foodItem.shopName);
+          }
+        });
+
+        setShopNames(listShopNames);
+        setTags(listTags);
+        veg = ["Veg", "NonVeg"];
+        console.log(listTags);
+        console.log(listShopNames);
+        console.log(tags);
+        console.log(shopNames);
+        console.log(veg);
+
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const sortChange = () => {
-    let usersTemp = users;
-    const flag = sortName;
-    usersTemp.sort((a, b) => {
-      if (a.date != undefined && b.date != undefined) {
-        return (1 - flag * 2) * (new Date(a.date) - new Date(b.date));
-      } else {
-        return 1;
-      }
-    });
-    setUsers(usersTemp);
-    setSortName(!sortName);
-  };
+  useEffect(() => {
+    let result = permFoodItems.slice();
+    //console.log(result);
+    if (min !== "") {
+      result = result.filter((item)=> item.price > min);
+      // for (let i = 0; i < result.length; i++) {
+      //   if (result[i].price < Number(min)) {
+      //     result.splice(i, 1);
+      //     console.log(result);
+      //   }
+      // }
+    }
 
-  const customFunction = (event) => {
-    console.log(event.target.value);
-    setSearchText(event.target.value);
-  };
+    if (max !== "") {
+      result = result.filter((item)=> item.price < max);
+    }
+
+    if (chosenShopName !== "" ) {
+      result = result.filter((item)=> item.shopName == chosenShopName);
+    }
+
+    if (chosenTag !== "" ) {
+      //result = result.filter((item)=> item.tags == chosenShopName);
+
+      //result = result.filter((item)=> { 
+      let flag,counter=0;
+      result.forEach((foodItem) => {
+        flag=0;
+        foodItem.tag.forEach((tage) => {
+          if(tage == chosenTag){
+            flag=1;
+          }
+        });
+        if(flag==0){
+          result.splice(counter, 1);
+        }
+        counter++;
+      });
+    }
+    
+
+    if (veg!="") {
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].veg !== veg) {
+          result.splice(i, 1);
+        }
+      }
+    }
+
+    console.log(result);
+    setFoodItems(result);
+  }, [min, max, chosenShopName, search, veg, chosenTag]);
 
   return (
     <div>
       <Grid container>
         <Grid item xs={12} md={3} lg={3}>
           <List component="nav" aria-label="mailbox folders">
-            <ListItem text>
+            <ListItem>
               <h1>Filters</h1>
             </ListItem>
           </List>
@@ -83,7 +167,7 @@ const UsersList = (props) => {
                   </InputAdornment>
                 ),
               }}
-              // onChange={customFunction}
+            // onChange={customFunction}
             />
           </List>
         </Grid>
@@ -91,16 +175,18 @@ const UsersList = (props) => {
       <Grid container>
         <Grid item xs={12} md={3} lg={3}>
           <List component="nav" aria-label="mailbox folders">
+
             <ListItem>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  Salary
+                  Food Prices
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
                     id="standard-basic"
                     label="Enter Min"
                     fullWidth={true}
+                    onChange={onChangeMin}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -108,21 +194,41 @@ const UsersList = (props) => {
                     id="standard-basic"
                     label="Enter Max"
                     fullWidth={true}
+                    onChange={onChangeMax}
                   />
                 </Grid>
               </Grid>
             </ListItem>
+
             <Divider />
+
             <ListItem divider>
               <Autocomplete
                 id="combo-box-demo"
-                options={users}
-                getOptionLabel={(option) => option.name}
+                options={shopNames}
+
+                onChange={(_, value) => setChosenShopName(value)}
+                value={chosenShopName}
                 fullWidth
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Select Names"
+                    label="Select Shop Name"
+                    variant="outlined"
+                  />
+                )}
+              />
+              <Autocomplete
+                id="combo-box-demo"
+                options={tags}
+
+                onChange={(_, value) => setChosenTag(value)}
+                value={chosenTag}
+                fullWidth
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Select Tags"
                     variant="outlined"
                   />
                 )}
@@ -130,30 +236,35 @@ const UsersList = (props) => {
             </ListItem>
           </List>
         </Grid>
+
         <Grid item xs={12} md={9} lg={9}>
           <Paper>
             <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell> Sr No.</TableCell>
-                  <TableCell>
-                    {" "}
-                    <Button onClick={sortChange}>
-                      {sortName ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-                    </Button>
-                    Date
-                  </TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
+                  <TableCell>Food Name</TableCell>
+                  <TableCell>Shop Name</TableCell>
+                  <TableCell>Veg/NonVeg</TableCell>
+                  <TableCell>Tags</TableCell>
+                  <TableCell>Price</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map((user, ind) => (
+                {foodItems.map((foodItem, ind) => (
                   <TableRow key={ind}>
                     <TableCell>{ind}</TableCell>
-                    <TableCell>{user.date}</TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{foodItem.foodName}</TableCell>
+                    <TableCell>{foodItem.shopName}</TableCell>
+                    {foodItem.veg === true && (
+                      <TableCell>Veg</TableCell>
+                    )}
+                    {foodItem.veg === false && (
+                      <TableCell>NonVeg</TableCell>
+                    )}
+
+                    <TableCell>{foodItem.tag}</TableCell>
+                    <TableCell>{foodItem.price}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -9,19 +9,20 @@ const foodItemsSchema = new Schema({
     foodName: {
         type:String,
         required:true,
+		// unique:true
     },
 	price: {
 		type: Number,
 		required: true,
 	},
 	veg: {
-		type: Number,
+		type: Boolean,
 		required: true
 	},
-	tag:{
+	tag:{ 
 		type: [String],
 		required: true
 	}
 });
 
-module.exports = foodItems = mongoose.model("foodItems", foodItemsSchema);
+module.exports = FoodItems = mongoose.model("FoodItems", foodItemsSchema);
