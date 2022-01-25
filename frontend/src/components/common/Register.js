@@ -91,6 +91,7 @@ const Register = (props) => {
       contactNo: contactNo,
       age: age,
       batchName: batchName,
+      wallet:0,
       date: Date.now(),
     };
 

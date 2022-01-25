@@ -15,7 +15,7 @@ import Divider from "@mui/material/Divider";
 import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-
+import Fuse from "fuse.js";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -28,7 +28,7 @@ const UsersList = (props) => {
   const [shopNames, setShopNames] = useState([]);
   const [chosenShopName, setChosenShopName] = useState("");
   const [tags, setTags] = useState([]);
-  const [chosenTag,setChosenTag] = useState("");
+  const [chosenTag, setChosenTag] = useState("");
   const [veg, setVeg] = useState([]);
   const [chosenVeg, setChosenVeg] = useState("");
   const [search, setSearch] = useState("");
@@ -41,11 +41,8 @@ const UsersList = (props) => {
     setMax(event.target.value);
   };
 
-  const reset = () => {
-    setChosenShopName("");
-    setChosenTag("");
-    setChosenVeg("");
-    
+  const onChangeSearch = (event) => {
+    setSearch(event.target.value);
   };
 
   useEffect(() => {
@@ -61,7 +58,7 @@ const UsersList = (props) => {
           for (let j = 0; j < foodItem.tag.length; j++) {
             //console.log("hf "+foodItem.tag.length+ foodItem.tag);
             if (!listTags.includes(foodItem.tag[j])) {
-                listTags.push(foodItem.tag[j]);
+              listTags.push(foodItem.tag[j]);
             }
           }
         });
@@ -100,8 +97,9 @@ const UsersList = (props) => {
   useEffect(() => {
     let result = permFoodItems.slice();
     console.log(result);
+
     if (min !== "") {
-      result = result.filter((item)=> item.price > min);
+      result = result.filter((item) => item.price > min);
       // for (let i = 0; i < result.length; i++) {
       //   if (result[i].price < Number(min)) {
       //     result.splice(i, 1);
@@ -111,44 +109,45 @@ const UsersList = (props) => {
     }
 
     if (max !== "") {
-      result = result.filter((item)=> item.price < max);
+      result = result.filter((item) => item.price < max);
     }
 
-    if (chosenShopName !== "" && chosenShopName != null ) {
-      result = result.filter((item)=> item.shopName == chosenShopName);
+    if (chosenShopName !== "" && chosenShopName != null) {
+      result = result.filter((item) => item.shopName == chosenShopName);
       console.log(chosenShopName);
     }
 
-    if (chosenTag !== "" && chosenTag != null ) {
+    if (chosenTag !== "" && chosenTag != null) {
       //result = result.filter((item)=> item.tags == chosenShopName);
       console.log(chosenTag);
       //result = result.filter((item)=> { 
-      let flag,counter=0;
+      let flag, counter = 0;
       result.forEach((foodItem) => {
-        flag=0;
+        flag = 0;
         foodItem.tag.forEach((tage) => {
-          if(tage == chosenTag){
-            flag=1;
+          if (tage == chosenTag) {
+            flag = 1;
           }
         });
-        if(flag==0){
+        if (flag == 0) {
           result.splice(counter, 1);
         }
         counter++;
       });
     }
-    
-    if (chosenVeg !== "" && chosenVeg != null ) {
-      let tempResult = [],pref;
 
-      if(chosenVeg=='Veg'){
-        pref = true;}
-      else{
+    if (chosenVeg !== "" && chosenVeg != null) {
+      let tempResult = [], pref;
+
+      if (chosenVeg == 'Veg') {
+        pref = true;
+      }
+      else {
         pref = false;
       }
 
       result.forEach((foodItem) => {
-        if (foodItem.veg ==pref) {
+        if (foodItem.veg == pref) {
           tempResult.push(foodItem);
         }
       });
@@ -156,10 +155,26 @@ const UsersList = (props) => {
       result = tempResult;
     }
 
+    if (search !== "" && search != null) {
+
+      const fuse = new Fuse(result, {
+        keys: ["foodName"],
+        threshold: 0.3
+      });
+
+      let resultT = fuse.search(search);
+
+      let temp = [];
+      resultT.forEach((foodItem) => {
+        temp.push(foodItem.item);
+      });
+      console.log(resultT);
+      result = temp;
+
+    }
+
     console.log(result);
-    
     setFoodItems(result);
-    //reset();
   }, [min, max, chosenShopName, search, chosenVeg, chosenTag]);
 
   return (
@@ -178,6 +193,8 @@ const UsersList = (props) => {
               id="standard-basic"
               label="Search"
               fullWidth={true}
+              value={search}
+              onChange={onChangeSearch}
               InputProps={{
                 endAdornment: (
                   <InputAdornment>
@@ -187,7 +204,6 @@ const UsersList = (props) => {
                   </InputAdornment>
                 ),
               }}
-            // onChange={customFunction}
             />
           </List>
         </Grid>
@@ -238,6 +254,8 @@ const UsersList = (props) => {
                   />
                 )}
               />
+            </ListItem>
+            <ListItem divider>
               <Autocomplete
                 id="combo-box-demo"
                 options={tags}
@@ -253,6 +271,8 @@ const UsersList = (props) => {
                   />
                 )}
               />
+            </ListItem>
+            <ListItem divider>
               <Autocomplete
                 id="combo-box-demo"
                 options={veg}
@@ -269,6 +289,7 @@ const UsersList = (props) => {
                 )}
               />
             </ListItem>
+
           </List>
         </Grid>
 
