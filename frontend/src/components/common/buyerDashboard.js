@@ -29,7 +29,7 @@ const UsersList = (props) => {
   const [chosenShopName, setChosenShopName] = useState("");
   const [tags, setTags] = useState([]);
   const [chosenTag,setChosenTag] = useState("");
-  const [veg, setVeg] = useState("");
+  const [veg, setVeg] = useState([]);
   const [chosenVeg, setChosenVeg] = useState("");
   const [search, setSearch] = useState("");
 
@@ -39,6 +39,13 @@ const UsersList = (props) => {
 
   const onChangeMax = (event) => {
     setMax(event.target.value);
+  };
+
+  const reset = () => {
+    setChosenShopName("");
+    setChosenTag("");
+    setChosenVeg("");
+    
   };
 
   useEffect(() => {
@@ -76,7 +83,8 @@ const UsersList = (props) => {
 
         setShopNames(listShopNames);
         setTags(listTags);
-        veg = ["Veg", "NonVeg"];
+        setVeg(['Veg', 'NonVeg']);
+
         console.log(listTags);
         console.log(listShopNames);
         console.log(tags);
@@ -91,7 +99,7 @@ const UsersList = (props) => {
 
   useEffect(() => {
     let result = permFoodItems.slice();
-    //console.log(result);
+    console.log(result);
     if (min !== "") {
       result = result.filter((item)=> item.price > min);
       // for (let i = 0; i < result.length; i++) {
@@ -106,13 +114,14 @@ const UsersList = (props) => {
       result = result.filter((item)=> item.price < max);
     }
 
-    if (chosenShopName !== "" ) {
+    if (chosenShopName !== "" && chosenShopName != null ) {
       result = result.filter((item)=> item.shopName == chosenShopName);
+      console.log(chosenShopName);
     }
 
-    if (chosenTag !== "" ) {
+    if (chosenTag !== "" && chosenTag != null ) {
       //result = result.filter((item)=> item.tags == chosenShopName);
-
+      console.log(chosenTag);
       //result = result.filter((item)=> { 
       let flag,counter=0;
       result.forEach((foodItem) => {
@@ -129,18 +138,29 @@ const UsersList = (props) => {
       });
     }
     
+    if (chosenVeg !== "" && chosenVeg != null ) {
+      let tempResult = [],pref;
 
-    if (veg!="") {
-      for (let i = 0; i < result.length; i++) {
-        if (result[i].veg !== veg) {
-          result.splice(i, 1);
-        }
+      if(chosenVeg=='Veg'){
+        pref = true;}
+      else{
+        pref = false;
       }
+
+      result.forEach((foodItem) => {
+        if (foodItem.veg ==pref) {
+          tempResult.push(foodItem);
+        }
+      });
+
+      result = tempResult;
     }
 
     console.log(result);
+    
     setFoodItems(result);
-  }, [min, max, chosenShopName, search, veg, chosenTag]);
+    //reset();
+  }, [min, max, chosenShopName, search, chosenVeg, chosenTag]);
 
   return (
     <div>
@@ -229,6 +249,21 @@ const UsersList = (props) => {
                   <TextField
                     {...params}
                     label="Select Tags"
+                    variant="outlined"
+                  />
+                )}
+              />
+              <Autocomplete
+                id="combo-box-demo"
+                options={veg}
+
+                onChange={(_, value) => setChosenVeg(value)}
+                value={chosenVeg}
+                fullWidth
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Select Veg/NonVeg"
                     variant="outlined"
                   />
                 )}
