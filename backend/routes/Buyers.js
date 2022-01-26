@@ -64,9 +64,9 @@ router.get("/getUser",(req,res)=>{
     });
 });
 
-router.get("/getWallet",(req,res)=>{
+router.post("/getWallet",(req,res)=>{
     const email = req.body.email;
-    Buyer.findOne({email}).then(buyer => {
+    Buyer.findOne({email: email}).then(buyer => {
         res.send(buyer);
         return buyer; 
     });

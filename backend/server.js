@@ -11,6 +11,7 @@ var testAPIRouter = require("./routes/testAPI");
 var BuyerRouter = require("./routes/Buyers");
 var VendorRouter = require("./routes/Vendors");
 var FoodItemsRouter = require("./routes/FoodItems");
+var OrdersRouter = require("./routes/Orders");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -28,6 +29,7 @@ app.use("/testAPI", testAPIRouter);
 app.use("/buyer", BuyerRouter);
 app.use("/vendor",VendorRouter);
 app.use("/foodItems",FoodItemsRouter);
+app.use("/orders",OrdersRouter); 
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);

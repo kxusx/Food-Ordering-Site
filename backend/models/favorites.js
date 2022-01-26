@@ -5,7 +5,7 @@ const favoritesSchema = new Schema({
     shopName: { 
         type: [String],
         required: true,
-    },
+    }, 
     foodName: {
         type:[String],
         required:true,

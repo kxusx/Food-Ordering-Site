@@ -3,6 +3,7 @@ import axios from "axios";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import TableCell from "@mui/material/TableCell";
+import Chip from '@mui/material/Chip';
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
@@ -32,7 +33,13 @@ const UsersList = (props) => {
   const [veg, setVeg] = useState([]);
   const [chosenVeg, setChosenVeg] = useState("");
   const [search, setSearch] = useState("");
+  const [wallet, setWallet] = useState(localStorage.getItem("wallet"));
+  const [inWallet, setInWallet] = useState("");
+  const [email, setEmail] = useState(localStorage.getItem("email"));
 
+  const onChangeWallet = (event) => {
+    setWallet(event.target.value);
+  };
   const onChangeMin = (event) => {
     setMin(event.target.value);
   };
@@ -45,13 +52,30 @@ const UsersList = (props) => {
     setSearch(event.target.value);
   };
 
+  useEffect(() => {  
+    const newBuyer = {
+      email: email
+    };
+    console.log(newBuyer);
+
+    console.log(email);
+
+    axios.post("http://localhost:4000/buyer/getWallet",newBuyer)
+      .then((response) => {
+        setInWallet(response.data.wallet);
+        console.log("w");
+        console.log(response.data);
+      });
+
+  },[]);
+
   useEffect(() => {
     axios
       .get("http://localhost:4000/foodItems")
       .then((response) => {
         setFoodItems(response.data);
         setPermFoodItems(response.data);
-        console.log(permFoodItems);
+        //console.log(permFoodItems);
 
         let listTags = [];
         response.data.forEach((foodItem) => {
@@ -82,11 +106,11 @@ const UsersList = (props) => {
         setTags(listTags);
         setVeg(['Veg', 'NonVeg']);
 
-        console.log(listTags);
-        console.log(listShopNames);
-        console.log(tags);
-        console.log(shopNames);
-        console.log(veg);
+        // console.log(listTags);
+        // console.log(listShopNames);
+        // console.log(tags);
+        // console.log(shopNames);
+        // console.log(veg);
 
       })
       .catch((error) => {
@@ -96,16 +120,10 @@ const UsersList = (props) => {
 
   useEffect(() => {
     let result = permFoodItems.slice();
-    console.log(result);
+    //console.log(result);
 
     if (min !== "") {
       result = result.filter((item) => item.price > min);
-      // for (let i = 0; i < result.length; i++) {
-      //   if (result[i].price < Number(min)) {
-      //     result.splice(i, 1);
-      //     console.log(result);
-      //   }
-      // }
     }
 
     if (max !== "") {
@@ -156,7 +174,6 @@ const UsersList = (props) => {
     }
 
     if (search !== "" && search != null) {
-
       const fuse = new Fuse(result, {
         keys: ["foodName"],
         threshold: 0.3
@@ -168,17 +185,24 @@ const UsersList = (props) => {
       resultT.forEach((foodItem) => {
         temp.push(foodItem.item);
       });
-      console.log(resultT);
+      //console.log(resultT);
       result = temp;
-
     }
 
-    console.log(result);
+    //console.log(result);
     setFoodItems(result);
   }, [min, max, chosenShopName, search, chosenVeg, chosenTag]);
 
   return (
     <div>
+      <Grid container align={"center"} spacing={2}>
+        <List component="nav" aria-label="mailbox folders">
+          <ListItem>
+            <h1>Amount in Wallet : {inWallet}</h1>
+          </ListItem>
+        </List>
+      </Grid>
+
       <Grid container>
         <Grid item xs={12} md={3} lg={3}>
           <List component="nav" aria-label="mailbox folders">
@@ -208,6 +232,7 @@ const UsersList = (props) => {
           </List>
         </Grid>
       </Grid>
+      
       <Grid container>
         <Grid item xs={12} md={3} lg={3}>
           <List component="nav" aria-label="mailbox folders">
@@ -309,7 +334,7 @@ const UsersList = (props) => {
               <TableBody>
                 {foodItems.map((foodItem, ind) => (
                   <TableRow key={ind}>
-                    <TableCell>{ind}</TableCell>
+                    <TableCell>{ind+1}</TableCell>
                     <TableCell>{foodItem.foodName}</TableCell>
                     <TableCell>{foodItem.shopName}</TableCell>
                     {foodItem.veg === true && (
@@ -319,7 +344,21 @@ const UsersList = (props) => {
                       <TableCell>NonVeg</TableCell>
                     )}
 
-                    <TableCell>{foodItem.tag}</TableCell>
+                    <TableCell>
+                      <List>
+                    {
+                          tags.map((tagItem, ind) => {
+                            if (foodItem.tag.includes(tagItem)) {
+                              return (
+                                <ListItem key={ind}>
+                                  <Chip label={tagItem} />
+                                </ListItem>
+                              );
+                            }
+                          })
+                        }
+                      </List>
+                    </TableCell>
                     <TableCell>{foodItem.price}</TableCell>
                   </TableRow>
                 ))}

@@ -25,49 +25,54 @@ import { useNavigate } from "react-router-dom";
 
 const BuyerWallet = (props) => {
     const [wallet, setWallet] = useState(localStorage.getItem("wallet"));
-    con
+    const [inWallet,setInWallet] = useState("");
     const [email, setEmail] = useState(localStorage.getItem("email"));
 
     const onChangeWallet = (event) => {
         setWallet(event.target.value);
     };
 
+
+
     useEffect(() => {
-       axios
-      .get("http://localhost:4000/buyer/wallet")
-      .then((response) => {
-        setFoodItems(response.data);
-        setPermFoodItems(response.data);
-        console.log(permFoodItems);
-    }, [walle]);
+
+        const newBuyer = {
+            email: email
+          };
+      
+          axios.post("http://localhost:4000/buyer/getWallet",newBuyer)
+            .then((response) => {
+              setInWallet(response.data.wallet);
+            });
+    }, [inWallet]);
 
     const onAddToWallet = (event) => {
         event.preventDefault();
+        console.log(parseInt(wallet)+parseInt(inWallet));
+        
 
         const newWallet = {
             wallet: wallet,
             email: email
         }
-
-        
-
         axios
             .post("http://localhost:4000/buyer/addToWallet", newWallet)
             .then((response) => {
-                alert("Added\t" + response.data.wallet);
+                //alert("Added " + wallet);
                 setWallet(response.data.wallet);
                 console.log(response.data);
             });
+            setInWallet(parseInt(wallet)+parseInt(inWallet));
 
     };
 
     return (
         <Grid container align={"center"} spacing={2}>
             <List component="nav" aria-label="mailbox folders">
-            <ListItem>
-              <h1>Amount in Wallet : {wallet}</h1>
-            </ListItem>
-          </List>
+                <ListItem>
+                    <h1>Amount in Wallet : {inWallet}</h1>
+                </ListItem>
+            </List>
             <Grid item xs={12}>
                 <TextField
                     label="Add To Wallet"
@@ -83,5 +88,4 @@ const BuyerWallet = (props) => {
         </Grid>
     );
 };
-
 export default BuyerWallet;
