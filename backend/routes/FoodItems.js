@@ -34,6 +34,16 @@ router.post("/addFoodItems", (req, res) => {
         });
 });
 
+router.post("/addAddOns",(req,res)=>{
+    const foodName = req.body.foodName;
+    const addOns = req.body.addOns;
+    FoodItems.findOne({foodName: foodName}).then(foodItems=>{
+        foodItems.addOns = addOns;
+        foodItems.save();
+        res.send(foodItems);
+    });
+});
+
 router.post("/delete",(req,res)=>{
     const id = req.body.id;
     FoodItems.deleteOne({_id:id}).then(item=>{

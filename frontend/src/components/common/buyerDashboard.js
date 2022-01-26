@@ -52,22 +52,20 @@ const UsersList = (props) => {
     setSearch(event.target.value);
   };
 
-  useEffect(() => {  
+  useEffect(() => {
+    let temp;
     const newBuyer = {
       email: email
     };
-    console.log(newBuyer);
 
-    console.log(email);
-
-    axios.post("http://localhost:4000/buyer/getWallet",newBuyer)
+    axios.post("http://localhost:4000/buyer/getWallet", newBuyer)
       .then((response) => {
         setInWallet(response.data.wallet);
-        console.log("w");
-        console.log(response.data);
+        temp = response.data.wallet;
+        // console.log("w");
+        // console.log(response.data);
       });
-
-  },[]);
+  }, [inWallet]);
 
   useEffect(() => {
     axios
@@ -232,7 +230,7 @@ const UsersList = (props) => {
           </List>
         </Grid>
       </Grid>
-      
+
       <Grid container>
         <Grid item xs={12} md={3} lg={3}>
           <List component="nav" aria-label="mailbox folders">
@@ -329,12 +327,13 @@ const UsersList = (props) => {
                   <TableCell>Veg/NonVeg</TableCell>
                   <TableCell>Tags</TableCell>
                   <TableCell>Price</TableCell>
+                  <TableCell>Order</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {foodItems.map((foodItem, ind) => (
                   <TableRow key={ind}>
-                    <TableCell>{ind+1}</TableCell>
+                    <TableCell>{ind + 1}</TableCell>
                     <TableCell>{foodItem.foodName}</TableCell>
                     <TableCell>{foodItem.shopName}</TableCell>
                     {foodItem.veg === true && (
@@ -346,7 +345,7 @@ const UsersList = (props) => {
 
                     <TableCell>
                       <List>
-                    {
+                        {
                           tags.map((tagItem, ind) => {
                             if (foodItem.tag.includes(tagItem)) {
                               return (
@@ -360,6 +359,41 @@ const UsersList = (props) => {
                       </List>
                     </TableCell>
                     <TableCell>{foodItem.price}</TableCell>
+                    <TableCell><Button variant="contained" color="primary" onClick={() => {
+                      if (inWallet >= foodItem.price) {
+                        setInWallet(inWallet - foodItem.price);
+                        const newBuyer = {
+                          email: email,
+                          wallet: inWallet - foodItem.price
+                        };
+
+                        axios.post("http://localhost:4000/buyer/setWallet", newBuyer)
+                          .then((response) => {
+                            // console.log(response);
+                          });
+                         
+                        const newOrder = {
+                          buyerEmail: email,
+                          foodName: foodItem.foodName,
+                          shopName: foodItem.shopName,
+                          price: foodItem.price,
+                          veg: foodItem.veg,
+                          status : "PLACED",
+                          quantity : 1,
+                          addOns: ["c"],
+                          rating: 3,
+                        };
+
+                        console.log(newOrder);
+
+                        axios.post("http://localhost:4000/order/addOrder", newOrder)
+                          .then((response) => {
+                            console.log(response);
+                          });
+
+                        setFoodItems(foodItems.filter((item) => item.foodName !== foodItem.foodName));
+                      }
+                    }}>Order</Button></TableCell>
                   </TableRow>
                 ))}
               </TableBody>

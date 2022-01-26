@@ -9,7 +9,6 @@ const foodItemsSchema = new Schema({
     foodName: {
         type:String,
         required:true,
-		// unique:true
     },
 	price: {
 		type: Number,
@@ -22,6 +21,10 @@ const foodItemsSchema = new Schema({
 	tag:{ 
 		type: [String],
 		required: true
+	},
+	addOns:{
+		type: [String],
+		required: true,
 	}
 });
 

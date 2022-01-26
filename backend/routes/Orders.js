@@ -11,7 +11,7 @@ router.get("/", function (req, res) {
         } else {
             res.json(users);
         }
-    })
+    }) 
 });
 
 router.post("/addOrder",function(req,res){
@@ -38,6 +38,7 @@ router.post("/addOrder",function(req,res){
 
 router.post("/getOrder",function(req,res){
     const email = req.body.email;
+    
     Orders.find({buyerEmail: email}).then(orders=>{
         res.send(orders);
     });

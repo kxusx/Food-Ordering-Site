@@ -24,8 +24,8 @@ const Navbar = () => {
           <Button color="inherit" onClick={() => navigate("/buyerProfile")}>
             Profile
           </Button>
-          <Button color="inherit" onClick={() => navigate("/buyerSearch")}>
-            Search
+          <Button color="inherit" onClick={() => navigate("/buyerOrders")}>
+            Orders
           </Button>
           <Button color="inherit" onClick={() => navigate("/buyerWallet")}>
             Wallet

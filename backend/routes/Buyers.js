@@ -83,6 +83,18 @@ router.post("/addToWallet",(req,res)=>{
     });
 });
 
+router.post("/setWallet",(req,res)=>{
+    const email = req.body.email;
+    const wallet = req.body.wallet;
+
+    Buyer.findOne({ email }).then(buyer => {
+        buyer.wallet = wallet;
+        buyer.save();
+        res.send(buyer);
+    });
+});
+
+
 //POST request 
 //Login
 router.post("/login", (req, res) => {

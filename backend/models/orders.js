@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const ordersSchema = new Schema({
 	shopName: {
 		type: String,
-		required: true,
+		required: true, 
 	},
     foodName: {
         type:String,
@@ -19,7 +19,7 @@ const ordersSchema = new Schema({
 		required: true
 	},
     buyerEmail:{
-        type: [String],
+        type: String,
 		required: true
     },
     status:{
