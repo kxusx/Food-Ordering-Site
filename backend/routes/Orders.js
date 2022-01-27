@@ -16,11 +16,11 @@ router.get("/", function (req, res) {
 
 router.post("/addOrder",function(req,res){
     const newOrder = new Orders({
-        shopName: req.body.shopName,
+        buyerEmail: req.body.buyerEmail,
         foodName: req.body.foodName,
+        shopName: req.body.shopName,       
         price: req.body.price,
         veg: req.body.veg,
-        buyerEmail: req.body.buyerEmail,
         status: req.body.status,
         quantity: req.body.quantity,
         addOns: req.body.addOns,

@@ -75,7 +75,7 @@ const BuyerProfile = (props) => {
             axios
                 .post("http://localhost:4000/buyer/changeProfile", newBuyer)
                 .then((response) => {
-                    alert("Created\t" + response.data.name);
+                    alert("Update");
                     console.log(response.data);
                 });
         };

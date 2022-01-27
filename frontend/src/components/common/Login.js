@@ -54,7 +54,7 @@ export default function SignIn() {
                     alert("Logined Buyer");
                     console.log(response.data);
                     console.log(response.data._id);
-                    navigate("/buyerProfile");
+                    navigate("/buyerDashboard");
                 });
         }else{
             const newVendor = {
@@ -65,8 +65,18 @@ export default function SignIn() {
             axios
                 .post("http://localhost:4000/vendor/login", newVendor)
                 .then((response) => {
+                    localStorage.setItem("id",response.data._id);
+                    localStorage.setItem("managerName",response.data.managerName);
+                    localStorage.setItem("shopName",response.data.shopName);
+                    localStorage.setItem("email",response.data.email);
+                    localStorage.setItem("password",response.data.password);
+                    localStorage.setItem("contactNo",response.data.contactNo);
+                    localStorage.setItem("openingTime",response.data.openingTime)
+                    ;
+                    localStorage.setItem("closingTime",response.data.closingTime);
                     alert("Logined vendor");
                     console.log(response.data);
+                    navigate("/vendorProfile");
                 });
         }
         

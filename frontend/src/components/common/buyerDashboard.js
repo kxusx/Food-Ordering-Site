@@ -20,14 +20,19 @@ import Fuse from "fuse.js";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { Navigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const UsersList = (props) => {
+  const navigate = useNavigate();
   const [foodItems, setFoodItems] = useState([]);
   const [permFoodItems, setPermFoodItems] = useState([]);
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [shopNames, setShopNames] = useState([]);
   const [chosenShopName, setChosenShopName] = useState("");
+  const [addOnsNames, setAddOnsNames] = useState([]);
+  const [addOnsPrices, setAddOnsPrices] = useState([]);
   const [tags, setTags] = useState([]);
   const [chosenTag, setChosenTag] = useState("");
   const [veg, setVeg] = useState([]);
@@ -40,6 +45,7 @@ const UsersList = (props) => {
   const onChangeWallet = (event) => {
     setWallet(event.target.value);
   };
+  
   const onChangeMin = (event) => {
     setMin(event.target.value);
   };
@@ -73,6 +79,7 @@ const UsersList = (props) => {
       .then((response) => {
         setFoodItems(response.data);
         setPermFoodItems(response.data);
+
         //console.log(permFoodItems);
 
         let listTags = [];
@@ -85,13 +92,26 @@ const UsersList = (props) => {
           }
         });
 
-        //   response.data.forEach((foodItem) => {
-        //   foodItem.tag.forEach((tage) => {
-        //     if (!listTags.includes(tage)) {
-        //       listTags.push(tage);
-        //     }
-        //   });
-        // });
+        let addOnNames = [];
+        response.data.forEach((foodItem) => {
+          for (let j = 0; j < foodItem.addOnsName.length; j++) {
+            if (!addOnNames.includes(foodItem.addOnsName[j])) {
+              addOnNames.push(foodItem.addOnsName[j]);
+            }
+          }
+        });
+        //console.log(addOnNames);
+
+        let addOnPrices = [];
+        response.data.forEach((foodItem) => {
+          for (let j = 0; j < foodItem.addOnsPrice.length; j++) {
+            if (!addOnPrices.includes(foodItem.addOnsPrice[j])) {
+              addOnPrices.push(foodItem.addOnsPrice[j]);
+            }
+          }
+        });
+        //console.log(addOnPrices);
+        
 
         let listShopNames = [];
         response.data.forEach((foodItem) => {
@@ -102,6 +122,8 @@ const UsersList = (props) => {
 
         setShopNames(listShopNames);
         setTags(listTags);
+        setAddOnsNames(addOnNames);
+        setAddOnsPrices(addOnPrices);
         setVeg(['Veg', 'NonVeg']);
 
         // console.log(listTags);
@@ -130,7 +152,7 @@ const UsersList = (props) => {
 
     if (chosenShopName !== "" && chosenShopName != null) {
       result = result.filter((item) => item.shopName == chosenShopName);
-      console.log(chosenShopName);
+      //console.log(chosenShopName);
     }
 
     if (chosenTag !== "" && chosenTag != null) {
@@ -326,8 +348,11 @@ const UsersList = (props) => {
                   <TableCell>Shop Name</TableCell>
                   <TableCell>Veg/NonVeg</TableCell>
                   <TableCell>Tags</TableCell>
+                  <TableCell>AddOns Names</TableCell>
+                  <TableCell>AddOns Price</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Order</TableCell>
+                  
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -358,6 +383,37 @@ const UsersList = (props) => {
                         }
                       </List>
                     </TableCell>
+                    <TableCell>
+                      <List>
+                        {
+                          addOnsNames.map((addOnItem, ind) => {
+                            if (foodItem.addOnsName.includes(addOnItem)) {
+                              return (
+                                <ListItem key={ind}>
+                                  <Chip label={addOnItem} />
+                                </ListItem>
+                              );
+                            }
+                          })
+                        }
+                      </List>
+                    </TableCell>
+                    <TableCell>
+                      <List>
+                        {
+                          addOnsPrices.map((addOnItem, ind) => {
+                            if (foodItem.addOnsPrice.includes(addOnItem)) {
+                              return (
+                                <ListItem key={ind}>
+                                  <Chip label={addOnItem} />
+                                </ListItem>
+                              );                               
+                            }
+                          })
+                        }
+                      </List>
+                    </TableCell>
+
                     <TableCell>{foodItem.price}</TableCell>
                     <TableCell><Button variant="contained" color="primary" onClick={() => {
                       if (inWallet >= foodItem.price) {
@@ -372,6 +428,7 @@ const UsersList = (props) => {
                             // console.log(response);
                           });
                          
+
                         const newOrder = {
                           buyerEmail: email,
                           foodName: foodItem.foodName,
@@ -386,12 +443,12 @@ const UsersList = (props) => {
 
                         console.log(newOrder);
 
-                        axios.post("http://localhost:4000/order/addOrder", newOrder)
+                        axios.post("http://localhost:4000/orders/addOrder", newOrder)
                           .then((response) => {
                             console.log(response);
+                            navigate("/buyerOrders");
                           });
-
-                        setFoodItems(foodItems.filter((item) => item.foodName !== foodItem.foodName));
+                        //setFoodItems(foodItems.filter((item) => item.foodName !== foodItem.foodName));
                       }
                     }}>Order</Button></TableCell>
                   </TableRow>

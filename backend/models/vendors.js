@@ -25,11 +25,11 @@ const vendorSchema = new Schema({
 		required: true
 	},
 	openingTime:{
-		type: Number,
+		type: String,
 		required: true
 	},
     closingTime:{
-        type: Number,
+        type: String,
 		required: true
     }
 });

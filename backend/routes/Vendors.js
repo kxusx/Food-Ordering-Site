@@ -3,7 +3,7 @@ var router = express.Router();
 
 // Load Vendor model
 const Vendor = require("../models/vendors.js");
-
+ 
 // GET request 
 // Getting all the users
 router.get("/", function (req, res) {
@@ -54,10 +54,25 @@ router.post("/login", (req, res) => {
             });
         }
         else {
-            res.send("Email Found");
+            res.send(vendor);
             return vendor;
         }
     });
 });
 module.exports = router;
 
+router.post("/changeProfile", (req,res)=>{
+    const email = req.body.email;
+
+    Vendor.findOne({ email }).then(vendor => {
+        vendor.managerName = req.body.managerName;
+        vendor.shopName = req.body.shopName;
+        vendor.email = req.body.email;
+        vendor.password = req.body.password;
+        vendor.contactNo = req.body.contactNo;
+        vendor.openingTime = req.body.openingTime;
+        vendor.closingTime = req.body.closingTime;
+        vendor.save();
+        res.send(vendor);
+    });
+});

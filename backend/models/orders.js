@@ -41,7 +41,8 @@ const ordersSchema = new Schema({
         max:5,
     }
 },{
-    timestamps: true
+    timestamps: true,
+    unique: true
 });
 
 module.exports = Orders = mongoose.model("Orders", ordersSchema);

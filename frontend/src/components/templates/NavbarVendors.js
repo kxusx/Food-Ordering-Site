@@ -16,23 +16,25 @@ const Navbar = () => {
             variant="h6"
             component="div"
             sx={{ cursor: "pointer" }}
-            onClick={() => navigate("/buyerDashboard")}
+            onClick={() => navigate("/vendorFoodDashboard")}
           >
             Dashboard
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Button color="inherit" onClick={() => navigate("/buyerProfile")}>
+          <Button color="inherit" onClick={() => navigate("/vendorProfile")}>
             Profile
           </Button>
-          <Button color="inherit" onClick={() => navigate("/buyerOrders")}>
-            Orders
+
+          <Button color="inherit" onClick={() => navigate("/vendorAddFoodItems")}>
+            Add Food Items
           </Button>
-          <Button color="inherit" onClick={() => navigate("/buyerWallet")}>
-            Wallet
+         <Button color="inherit" onClick={() => navigate("/vendorOrdersList")}>
+            Orders List
           </Button>
-          <Button color="inherit" onClick={() => navigate("/buyerLogout")}>
+          <Button color="inherit" onClick={() => navigate("/vendorLogout")}>
             Logout
           </Button>
+
           
         </Toolbar>
       </AppBar>

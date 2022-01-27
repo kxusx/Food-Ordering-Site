@@ -20,36 +20,30 @@ import Fuse from "fuse.js";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import React from "react";
 
-const BuyerOrders = (props) => {
-    const [orders, setOrders] = useState([]);
-    const [shopName, setShopName] = useState("");
+const VendorOrdersList = (props) => {
+    const navigate = useNavigate();
+    const [orders,setOrders] = useState([]);
+    const [shopName, setShopName] = useState(localStorage.getItem("shopName"));
     const [foodName, setFoodName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [price, setPrice] = useState("");
-    const [buyerEmail, setBuyerEmail] = useState(localStorage.getItem("email"));
     const [veg, setVeg] = useState("");
-    const [status, setStatus] = useState("");
+    const [chosenVeg, setChosenVeg] = useState("");
     const [addOns, setAddOns] = useState("");
     const [rating, setRating] = useState("");
-    const [wallet, setWallet] = useState(localStorage.getItem("wallet"));
-    const [inWallet, setInWallet] = useState("");
-    const [email, setEmail] = useState(localStorage.getItem("email"));
-
-    useEffect(() => {
-        let temp;
-        const newBuyer = {
-          email: email
-        };
-    
-        axios.post("http://localhost:4000/buyer/getWallet", newBuyer)
-          .then((response) => {
-            setInWallet(response.data.wallet);
-            temp = response.data.wallet;
-            // console.log("w");
-            // console.log(response.data);
-          });
-      }, [inWallet]);
+    const [addOnName, setAddOnName] = useState("");
+    const [addOnPrice, setAddOnPrice] = useState("");
+    const [addOnsNameList, setAddOnsNameList] = useState([]);
+    const [addOnsPriceList, setAddOnsPriceList] = useState([]);
+    const [tags, setTags] = useState("");
+    const [tag, setTag] = useState("");
+    const [addOnFlag, setAddOnFlag] = useState(false);
+    const [tagFlag, setTagFlag] = useState(false);
+    const [buyerEmail, setBuyerEmail] = useState("");
 
     useEffect(() => {
         const newOrder={
@@ -58,19 +52,14 @@ const BuyerOrders = (props) => {
         axios.post("http://localhost:4000/orders/getOrder", newOrder)
             .then((response) => {
                 setOrders(response.data);
-                console.log(response.data);
+
             });
-    }, [buyerEmail]);
+    }, []);
+
 
     return(
         <div>
-        <Grid container align={"center"} spacing={2}>
-        <List component="nav" aria-label="mailbox folders">
-          <ListItem>
-            <h1>Amount in Wallet : {inWallet}</h1>
-          </ListItem>
-        </List>
-        </Grid>
+        
 
         <Grid container align={"center"} spacing={2}>
         <List component="nav" aria-label="mailbox folders">
@@ -115,7 +104,6 @@ const BuyerOrders = (props) => {
         </div>
             
     );
+};
 
-
-}
-export default BuyerOrders;
+export default VendorOrdersList;

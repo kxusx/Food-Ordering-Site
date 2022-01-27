@@ -22,8 +22,28 @@ const foodItemsSchema = new Schema({
 		type: [String],
 		required: true
 	},
-	addOns:{
+	// addOns:{
+	// 	type:[{
+	// 		addOnName: {
+	// 			type: String,
+	// 			required: true
+	// 		},
+	// 		addOnPrice: {
+	// 			type: Number,
+	// 			required: true
+	// 		}
+	// 	}],
+	// },
+	addOnsName:{
 		type: [String],
+		required: true
+	},
+	addOnsPrice:{
+		type: [Number],
+		required: true
+	},
+	rating:{
+		type: Number,
 		required: true,
 	}
 });

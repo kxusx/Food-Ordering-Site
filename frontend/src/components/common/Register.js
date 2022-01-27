@@ -8,7 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
+ 
 const Register = (props) => {
   const [choice, setChoice] = useState("");
   const [name, setName] = useState("");
@@ -83,26 +83,29 @@ const Register = (props) => {
 
   const onSubmitBuyer = (event) => {
     event.preventDefault();
-
-    const newBuyer = {
-      name: name,
-      email: email,
-      password: password,
-      contactNo: contactNo,
-      age: age,
-      batchName: batchName,
-      wallet:0,
-      date: Date.now(),
-    };
-
-    axios
-      .post("http://localhost:4000/buyer/register", newBuyer)
-      .then((response) => {
-        alert("Created\t" + response.data.name);
-        console.log(response.data);
-      });
-
-    resetInputs();
+    if(age<0){
+      alert("Age cannot be negative");
+    }else{
+      const newBuyer = {
+        name: name,
+        email: email,
+        password: password,
+        contactNo: contactNo,
+        age: age,
+        batchName: batchName,
+        wallet:0,
+        date: Date.now(),
+      };
+  
+      axios
+        .post("http://localhost:4000/buyer/register", newBuyer)
+        .then((response) => {
+          alert("Created\t" + response.data.name);
+          console.log(response.data);
+        });
+  
+      resetInputs();
+    }
   };
 
   const onSubmitVendor = (event) => {
@@ -122,7 +125,7 @@ const Register = (props) => {
     axios
       .post("http://localhost:4000/vendor/register", newVendor)
       .then((response) => {
-        alert("Created\t" + response.data.name);
+        alert("Register");
         console.log(response.data);
       });
 

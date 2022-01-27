@@ -17,14 +17,18 @@ router.get("/", function (req, res) {
 });
 
 router.post("/addFoodItems", (req, res) => {
+    console.log(req.body);
     const newFoodItems = new FoodItems({
         shopName: req.body.shopName,
         price: req.body.price,
         foodName : req.body.foodName,
         veg: req.body.veg,
         tag: req.body.tag,
+        addOnsName:req.body.addOnsName,
+        addOnsPrice:req.body.addOnsPrice,
+        rating: req.body.rating,
     });
-
+    console.log(newFoodItems);
     newFoodItems.save()
         .then(FoodItems => {
             res.status(200).json(FoodItems );
@@ -32,6 +36,14 @@ router.post("/addFoodItems", (req, res) => {
         .catch(err => {
             res.status(400).send(err);
         });
+});
+
+router.post("/getFoodItems",(req,res)=>{
+    const shopName = req.body.shopName;
+    FoodItems.find({shopName:shopName}).then(foodItems=>{
+        res.send(foodItems);
+        return foodItems;
+    });
 });
 
 router.post("/addAddOns",(req,res)=>{
