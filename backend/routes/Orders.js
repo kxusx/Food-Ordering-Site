@@ -44,4 +44,12 @@ router.post("/getOrder",function(req,res){
     });
 });
 
+router.post("/getOrderBasedOnShop",function(req,res){
+    const shopName = req.body.shopName;
+    
+    Orders.find({shopName:shopName}).then(orders=>{
+        res.send(orders);
+    });
+});
+
 module.exports = router;

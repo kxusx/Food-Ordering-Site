@@ -18,6 +18,7 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Fuse from "fuse.js";
 import SearchIcon from "@mui/icons-material/Search";
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { Navigate } from "react-router-dom";
@@ -25,14 +26,16 @@ import {useNavigate} from "react-router-dom";
 
 const UsersList = (props) => {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(true);
   const [foodItems, setFoodItems] = useState([]);
   const [permFoodItems, setPermFoodItems] = useState([]);
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [shopNames, setShopNames] = useState([]);
   const [chosenShopName, setChosenShopName] = useState("");
-  const [addOnsNames, setAddOnsNames] = useState([]);
-  const [addOnsPrices, setAddOnsPrices] = useState([]);
+  const [addOns, setAddOns] = useState([]);
+  const [addOnsNameList, setAddOnsNameList] = useState([]);
+  const [addOnsPriceList, setAddOnsPriceList] = useState([]);
   const [tags, setTags] = useState([]);
   const [chosenTag, setChosenTag] = useState("");
   const [veg, setVeg] = useState([]);
@@ -41,6 +44,7 @@ const UsersList = (props) => {
   const [wallet, setWallet] = useState(localStorage.getItem("wallet"));
   const [inWallet, setInWallet] = useState("");
   const [email, setEmail] = useState(localStorage.getItem("email"));
+  const [chosenFoodName,setChosenFoodName] = useState("");
 
   const onChangeWallet = (event) => {
     setWallet(event.target.value);
@@ -63,7 +67,7 @@ const UsersList = (props) => {
     const newBuyer = {
       email: email
     };
-
+      setOpen(false);
     axios.post("http://localhost:4000/buyer/getWallet", newBuyer)
       .then((response) => {
         setInWallet(response.data.wallet);
@@ -92,27 +96,39 @@ const UsersList = (props) => {
           }
         });
 
-        let addOnNames = [];
+        let listAddOns = [];
+        let listAddOnsName = [];
+        let listAddOnsPrice = [];
         response.data.forEach((foodItem) => {
-          for (let j = 0; j < foodItem.addOnsName.length; j++) {
-            if (!addOnNames.includes(foodItem.addOnsName[j])) {
-              addOnNames.push(foodItem.addOnsName[j]);
+          for (let j = 0; j < foodItem.addOns.length; j++) {
+            if (!listAddOns.includes(foodItem.addOns[j])) {
+              //listAddOns.push(foodItem.addOns[j]);
+              listAddOns.push(foodItem.addOns[j]);
+              
             }
           }
         });
-        //console.log(addOnNames);
 
-        let addOnPrices = [];
         response.data.forEach((foodItem) => {
-          for (let j = 0; j < foodItem.addOnsPrice.length; j++) {
-            if (!addOnPrices.includes(foodItem.addOnsPrice[j])) {
-              addOnPrices.push(foodItem.addOnsPrice[j]);
+          for (let j = 0; j < foodItem.addOns.length; j++) {
+            if (!listAddOnsName.includes(foodItem.addOnsName[j])) {
+              listAddOnsName.push(foodItem.addOnsName[j]);
             }
           }
         });
-        //console.log(addOnPrices);
+
+        response.data.forEach((foodItem) => {
+          for (let j = 0; j < foodItem.addOns.length; j++) {
+            if (!listAddOnsPrice.includes(foodItem.addOnsPrice[j])) {
+              listAddOnsPrice.push(foodItem.addOnsPrice[j]);
+            }
+          }
+        });
+        console.log("g");
+        //console.log(listAddOns);
+        console.log(listAddOnsName);
+       // console.log(listAddOnsPrice);
         
-
         let listShopNames = [];
         response.data.forEach((foodItem) => {
           if (!listShopNames.includes(foodItem.shopName)) {
@@ -122,8 +138,11 @@ const UsersList = (props) => {
 
         setShopNames(listShopNames);
         setTags(listTags);
-        setAddOnsNames(addOnNames);
-        setAddOnsPrices(addOnPrices);
+        setAddOns(listAddOns);
+        setAddOnsNameList(listAddOnsName);
+        setAddOnsPriceList(listAddOnsPrice);
+
+        //console.log(listAddOns);
         setVeg(['Veg', 'NonVeg']);
 
         // console.log(listTags);
@@ -157,7 +176,7 @@ const UsersList = (props) => {
 
     if (chosenTag !== "" && chosenTag != null) {
       //result = result.filter((item)=> item.tags == chosenShopName);
-      console.log(chosenTag);
+      //console.log(chosenTag);
       //result = result.filter((item)=> { 
       let flag, counter = 0;
       result.forEach((foodItem) => {
@@ -212,6 +231,22 @@ const UsersList = (props) => {
     //console.log(result);
     setFoodItems(result);
   }, [min, max, chosenShopName, search, chosenVeg, chosenTag]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // setOpen(true);
+
+
 
   return (
     <div>
@@ -287,7 +322,6 @@ const UsersList = (props) => {
               <Autocomplete
                 id="combo-box-demo"
                 options={shopNames}
-
                 onChange={(_, value) => setChosenShopName(value)}
                 value={chosenShopName}
                 fullWidth
@@ -321,7 +355,6 @@ const UsersList = (props) => {
               <Autocomplete
                 id="combo-box-demo"
                 options={veg}
-
                 onChange={(_, value) => setChosenVeg(value)}
                 value={chosenVeg}
                 fullWidth
@@ -348,8 +381,7 @@ const UsersList = (props) => {
                   <TableCell>Shop Name</TableCell>
                   <TableCell>Veg/NonVeg</TableCell>
                   <TableCell>Tags</TableCell>
-                  <TableCell>AddOns Names</TableCell>
-                  <TableCell>AddOns Price</TableCell>
+                  <TableCell>AddOns</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Order</TableCell>
                   
@@ -386,71 +418,28 @@ const UsersList = (props) => {
                     <TableCell>
                       <List>
                         {
-                          addOnsNames.map((addOnItem, ind) => {
+
+                          addOnsNameList.map((addOnItem, ind) => {
+                            // addOnsPriceList.map((addOnPriceItem, ind) => {
                             if (foodItem.addOnsName.includes(addOnItem)) {
                               return (
                                 <ListItem key={ind}>
                                   <Chip label={addOnItem} />
+                                  
                                 </ListItem>
+                                
                               );
                             }
                           })
                         }
                       </List>
-                    </TableCell>
-                    <TableCell>
-                      <List>
-                        {
-                          addOnsPrices.map((addOnItem, ind) => {
-                            if (foodItem.addOnsPrice.includes(addOnItem)) {
-                              return (
-                                <ListItem key={ind}>
-                                  <Chip label={addOnItem} />
-                                </ListItem>
-                              );                               
-                            }
-                          })
-                        }
-                      </List>
-                    </TableCell>
 
+                    </TableCell>
                     <TableCell>{foodItem.price}</TableCell>
-                    <TableCell><Button variant="contained" color="primary" onClick={() => {
-                      if (inWallet >= foodItem.price) {
-                        setInWallet(inWallet - foodItem.price);
-                        const newBuyer = {
-                          email: email,
-                          wallet: inWallet - foodItem.price
-                        };
-
-                        axios.post("http://localhost:4000/buyer/setWallet", newBuyer)
-                          .then((response) => {
-                            // console.log(response);
-                          });
-                         
-
-                        const newOrder = {
-                          buyerEmail: email,
-                          foodName: foodItem.foodName,
-                          shopName: foodItem.shopName,
-                          price: foodItem.price,
-                          veg: foodItem.veg,
-                          status : "PLACED",
-                          quantity : 1,
-                          addOns: ["c"],
-                          rating: 3,
-                        };
-
-                        console.log(newOrder);
-
-                        axios.post("http://localhost:4000/orders/addOrder", newOrder)
-                          .then((response) => {
-                            console.log(response);
-                            navigate("/buyerOrders");
-                          });
-                        //setFoodItems(foodItems.filter((item) => item.foodName !== foodItem.foodName));
-                      }
-                    }}>Order</Button></TableCell>
+                    <TableCell>
+                      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+                        Order
+                    </Button></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -458,8 +447,76 @@ const UsersList = (props) => {
           </Paper>
         </Grid>
       </Grid>
+
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Add Food Item</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Add Food Item
+          </DialogContentText>
+
+            <TextField  
+              id="standard-basic"
+              label="Food Name"
+              fullWidth={true}
+              //value={foodName}
+            />
+            <TextField
+              id="standard-basic"
+              label="Price"
+              fullWidth={true}
+              
+            />
+
+
+
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
 
 export default UsersList;
+
+// if (inWallet >= foodItem.price) {
+                      //   setInWallet(inWallet - foodItem.price);
+                      //   const newBuyer = {
+                      //     email: email,
+                      //     wallet: inWallet - foodItem.price
+                      //   };
+
+                      //   axios.post("http://localhost:4000/buyer/setWallet", newBuyer)
+                      //     .then((response) => {
+                      //       // console.log(response);
+                      //     });
+                         
+
+                      //   const newOrder = {
+                      //     buyerEmail: email,
+                      //     foodName: foodItem.foodName,
+                      //     shopName: foodItem.shopName,
+                      //     price: foodItem.price,
+                      //     veg: foodItem.veg,
+                      //     status : "PLACED",
+                      //     quantity : 1,
+                      //     addOns: ["c"],
+                      //     rating: 3,
+                      //   };
+
+                      //   //console.log(newOrder);
+
+                      //   axios.post("http://localhost:4000/orders/addOrder", newOrder)
+                      //     .then((response) => {
+                      //       //console.log(response);
+                      //       navigate("/buyerOrders");
+                      //     });
+                      //   //setFoodItems(foodItems.filter((item) => item.foodName !== foodItem.foodName));
+                      // }

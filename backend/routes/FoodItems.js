@@ -24,6 +24,7 @@ router.post("/addFoodItems", (req, res) => {
         foodName : req.body.foodName,
         veg: req.body.veg,
         tag: req.body.tag,
+        addOns: req.body.addOns,
         addOnsName:req.body.addOnsName,
         addOnsPrice:req.body.addOnsPrice,
         rating: req.body.rating,

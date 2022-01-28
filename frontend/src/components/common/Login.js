@@ -49,12 +49,13 @@ export default function SignIn() {
                     localStorage.setItem("contactNo",response.data.contactNo);
                     localStorage.setItem("age",response.data.age);
                     localStorage.setItem("wallet",response.data.wallet);
-
-
                     alert("Logined Buyer");
                     console.log(response.data);
                     console.log(response.data._id);
                     navigate("/buyerDashboard");
+                }).catch(err => {
+                    alert("Invalid Email or Password");
+                    console.log(err);
                 });
         }else{
             const newVendor = {
@@ -77,6 +78,9 @@ export default function SignIn() {
                     alert("Logined vendor");
                     console.log(response.data);
                     navigate("/vendorProfile");
+                }).catch(err => {
+                    alert("Invalid Email or Password");
+                    console.log(err);
                 });
         }
         

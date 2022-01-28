@@ -32,8 +32,8 @@ const VendorAddFoodItems = (props) => {
     const [quantity, setQuantity] = useState("");
     const [price, setPrice] = useState("");
     const [veg, setVeg] = useState("");
-    const [chosenVeg, setChosenVeg] = useState("");
-    const [addOns, setAddOns] = useState("");
+    const [chosenVeg, setChosenVeg] = useState([]);
+    const [addOns, setAddOns] = useState([]);
     const [rating, setRating] = useState("");
     const [addOnName, setAddOnName] = useState("");
     const [addOnPrice, setAddOnPrice] = useState("");
@@ -52,9 +52,10 @@ const VendorAddFoodItems = (props) => {
         setPrice(e.target.value);
     };
 
-    const onChangeVeg = (e) => {
-        console.log(e.target.value);
-        setVeg(e.target.value);
+    const onChangeChosenVeg = (e) => {
+        //console.log(e.target.value);
+        console.log(e);
+        setChosenVeg(e);
     };
 
     const onChangeAddOnName = (e) => {
@@ -73,8 +74,13 @@ const VendorAddFoodItems = (props) => {
         if (addOnName === "" || addOnPrice === "") {
             alert("Please fill all the fields");
         } else {
-            setAddOnsNameList([...addOnsNameList, addOnName]);
-            setAddOnsPriceList([...addOnsPriceList, parseInt(addOnPrice)]);
+            
+            let addon = {"addOnName": addOnName, "addOnPrice": addOnPrice};
+             //setAddOns(addOns.concat(addon));
+            setAddOns(prev => [...prev, addon]);
+            setAddOnsNameList(prev => [...prev, addOnName]);
+            setAddOnsPriceList(prev => [...prev, parseInt(addOnPrice)]);
+
             setAddOnName("");
             setAddOnPrice("");
         }
@@ -92,35 +98,30 @@ const VendorAddFoodItems = (props) => {
 
     const submitFoodItem = (event) => {
         event.preventDefault();
-        console.log(addOnFlag);
-        console.log(tagFlag);
         console.log("c"+chosenVeg);
         console.log("p"+price);
         console.log("f"+foodName);
         console.log(tags);
-        console.log(addOnsNameList);
-        console.log(addOnsPriceList);
+        console.log(addOns);
+        // console.log(addOnsNameList);
+        // console.log(addOnsPriceList);
 
         if (foodName === "" || price === "" || chosenVeg === "") {
             alert("Please fill all the fields");
         }
         else {
-            if(chosenVeg==="Veg"){
-                setVeg(true);
-            }
-            else{
-                setVeg(false);
-            }
             const data = {
                 shopName: shopName,
                 price: parseInt(price),
                 foodName: foodName,
-                veg: veg,
+                veg: chosenVeg === "Veg" ? true:false,
                 tag: tags,
+                addOns:addOns,
                 addOnsName: addOnsNameList,
                 addOnsPrice: addOnsPriceList,
                 rating: 0,     
             };
+            console.log(data);
             axios.post("http://localhost:4000/foodItems/addFoodItems", data)
                 .then(res => {
                     alert("Food Item Added");
@@ -157,7 +158,7 @@ const VendorAddFoodItems = (props) => {
                             id="combo-box-demo"
                             options={["Veg", "NonVeg"]}
 
-                            onChange={(_, value) => setChosenVeg(value)}
+                            onChange={(_, value) => onChangeChosenVeg(value)}
                             value={chosenVeg}
                             fullWidth
                             renderInput={(params) => (

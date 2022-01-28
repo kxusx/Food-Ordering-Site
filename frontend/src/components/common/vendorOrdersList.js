@@ -47,9 +47,9 @@ const VendorOrdersList = (props) => {
 
     useEffect(() => {
         const newOrder={
-            email:buyerEmail,
+            shopName:shopName,
         }
-        axios.post("http://localhost:4000/orders/getOrder", newOrder)
+        axios.post("http://localhost:4000/orders/getOrderBasedOnShop", newOrder)
             .then((response) => {
                 setOrders(response.data);
 
