@@ -460,7 +460,7 @@ const UsersList = (props) => {
                   <TableCell>Shop Name</TableCell>
                   <TableCell>Veg/NonVeg</TableCell>
                   <TableCell>Tags</TableCell>
-                  <TableCell>AddOns</TableCell>
+                  {/* <TableCell>AddOns</TableCell> */}
                   <TableCell>Price</TableCell>
                   <TableCell>Order</TableCell>
                   
@@ -494,7 +494,7 @@ const UsersList = (props) => {
                         }
                       </List>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <List>
                         {
 
@@ -513,7 +513,7 @@ const UsersList = (props) => {
                         }
                       </List>
 
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>{foodItem.price}</TableCell>
                     <TableCell>
                       <Button variant="contained" color="primary" onClick={() => {

@@ -23,17 +23,17 @@ import { useNavigate } from "react-router-dom";
 
 const VendorProfile = (props) => {
     const navigate = useNavigate();
-    const [managerName, setManagerName] = useState(localStorage.getItem("managerName"));
-    const [shopName, setShopName] = useState(localStorage.getItem("shopName"));
+    const [managerName, setManagerName] = useState("");
+    const [shopName, setShopName] = useState("");
     const [email, setEmail] = useState(localStorage.getItem("email"));
-    const [password, setPassword] = useState(localStorage.getItem("password"));
-    const [contactNo, setContactNo] = useState(localStorage.getItem("contactNo"));
-    const [openingTime, setOpeningTime] = useState(localStorage.getItem("openingTime"));
-    const [closingTime, setClosingTime] = useState(localStorage.getItem("closingTime"));
+    const [password, setPassword] = useState("");
+    const [contactNo, setContactNo] = useState("");
+    const [openingTime, setOpeningTime] = useState("");
+    const [closingTime, setClosingTime] = useState("");
 
     const onChangeManagerName = (event) => {
         setManagerName(event.target.value);
-    } 
+    }
     const onChangeShopName = (event) => {
         setShopName(event.target.value);
     }
@@ -53,6 +53,22 @@ const VendorProfile = (props) => {
         setClosingTime(event.target.value);
     }
 
+    useEffect(() => {
+        const o = {
+            email: email,
+        }
+        axios.post("http://localhost:4000/vendor/getVendor", o)
+            .then(res => {
+                console.log(res.data);
+                setManagerName(res.data.managerName);
+                setShopName(res.data.shopName);
+                setPassword(res.data.password);
+                setContactNo(res.data.contactNo);
+                setOpeningTime(res.data.openingTime);
+                setClosingTime(res.data.closingTime);
+            });
+    }, []);
+
     const onSubmitVendor = (event) => {
         event.preventDefault();
         const vendor = {
@@ -64,14 +80,14 @@ const VendorProfile = (props) => {
             openingTime: openingTime,
             closingTime: closingTime
         };
-        axios.post('http://localhost:5000/vendor/changeProfile', vendor)
+        axios.post('http://localhost:4000/vendor/changeProfile', vendor)
             .then((response) => {
                 alert("Update");
                 console.log(response.data);
             });
     };
 
-    
+
     return (
         <Grid container align={"center"} spacing={2}>
             <Grid item xs={12}>

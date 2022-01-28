@@ -31,6 +31,9 @@ const Navbar = () => {
          <Button color="inherit" onClick={() => navigate("/vendorOrdersList")}>
             Orders List
           </Button>
+          <Button color="inherit" onClick={() => navigate("/vendorStatistics")}>
+            Statistics
+          </Button>
           <Button color="inherit" onClick={() => navigate("/vendorLogout")}>
             Logout
           </Button>

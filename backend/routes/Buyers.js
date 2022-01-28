@@ -28,62 +28,68 @@ router.post("/register", (req, res) => {
         contactNo: req.body.contactNo,
         age: req.body.age,
         batchName: req.body.batchName,
-        wallet : 0
+        wallet: 0
     });
 
     newBuyer.save()
-        .then(Buyer => {
-            res.status(200).json(Buyer);
+        .then(buyer => {
+            res.status(200).json(buyer);
         })
         .catch(err => {
             res.status(400).send(err);
         });
 });
 
-router.post("/changeProfile", (req,res)=>{
+router.post("/changeProfile", (req, res) => {
     const email = req.body.email;
 
-    Buyer.findOne({ email }).then(buyer => {
+    Buyer.findOne({ email:email }).then(buyer => {
         buyer.email = req.body.email;
         buyer.name = req.body.name;
         buyer.password = req.body.password;
         buyer.contactNo = req.body.contactNo;
         buyer.age = req.body.age;
         buyer.batchName = req.body.batchName;
-        buyer.save();
-        res.send(buyer);
-    });
+        buyer.save()
+            .then(buyer => {
+                res.status(200).json(buyer);
+            })
+            .catch(err => {
+                res.status(400).send(err);
+            });
+    })
+        .catch(err => res.status(400).send(err))
 });
 
-router.get("/getUser",(req,res)=>{
-    const id = req.body._id;
-    Buyer.findOne({_id: id }).then(buyer => {
+router.post("/getUser", (req, res) => {
+    const email = req.body.email;
+    Buyer.findOne({ email }).then(buyer => {
         //res.json(buyer);
         res.send(buyer);
-        return buyer; 
+        return buyer;
     });
 });
 
-router.post("/getWallet",(req,res)=>{
+router.post("/getWallet", (req, res) => {
     const email = req.body.email;
-    Buyer.findOne({email: email}).then(buyer => {
+    Buyer.findOne({ email: email }).then(buyer => {
         res.send(buyer);
-        return buyer; 
+        return buyer;
     });
 });
 
-router.post("/addToWallet",(req,res)=>{
+router.post("/addToWallet", (req, res) => {
     const email = req.body.email;
     const wallet = req.body.wallet;
 
     Buyer.findOne({ email }).then(buyer => {
-        buyer.wallet = parseInt(buyer.wallet)+parseInt(wallet);
+        buyer.wallet = parseInt(buyer.wallet) + parseInt(wallet);
         buyer.save();
         res.send(buyer);
     });
 });
 
-router.post("/setWallet",(req,res)=>{
+router.post("/setWallet", (req, res) => {
     const email = req.body.email;
     const wallet = req.body.wallet;
 
@@ -101,7 +107,7 @@ router.post("/login", (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     // Find Buyer by email
-    Buyer.findOne({ email,password }).then(buyer => {
+    Buyer.findOne({ email, password }).then(buyer => {
         // Check if Buyer email exists
         if (!buyer) {
             return res.status(404).json({

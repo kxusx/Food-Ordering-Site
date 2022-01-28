@@ -23,12 +23,12 @@ import { useNavigate } from "react-router-dom";
 
 const BuyerProfile = (props) => {
     const [profileDetails, setProfileDetails] = useState("");
-    const [name, setName] = useState(localStorage.getItem("name"));
+    const [name, setName] = useState("");
     const [email, setEmail] = useState(localStorage.getItem("email"));
-    const [password, setPassword] = useState(localStorage.getItem("password"));
-    const [contactNo, setContactNo] = useState(localStorage.getItem("contactNo"));
-    const [age, setAge] = useState(localStorage.getItem("age"));
-    const [batchName, setBatchName] = useState(localStorage.getItem("batchName"));
+    const [password, setPassword] = useState("");
+    const [contactNo, setContactNo] = useState("");
+    const [age, setAge] = useState("");
+    const [batchName, setBatchName] = useState("");
 
     const onChangeBuyername = (event) => {
         setName(event.target.value);
@@ -56,8 +56,20 @@ const BuyerProfile = (props) => {
     
     
     useEffect(() => {
-
+        const o ={
+            email:email,
+        }
+        axios.post("http://localhost:4000/buyer/getUser", o)
+        .then(res => {
+            console.log(res.data);
+            setProfileDetails(res.data);
+            setName(res.data.name);
+            setPassword(res.data.password);
+            setContactNo(res.data.contactNo);
+            setAge(res.data.age);
+            setBatchName(res.data.batchName);
         });
+    },[]);
 
         const onSubmitBuyer = (event) => {
             event.preventDefault();

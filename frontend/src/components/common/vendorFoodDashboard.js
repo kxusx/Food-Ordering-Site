@@ -113,11 +113,21 @@ const VendorFoodDashboard = (props) => {
                                     </TableCell>
                                     <TableCell>{foodItem.price}</TableCell>
                                     <TableCell><Button variant ="contained" color="primary" onClick={() => {
-                                        navigate("/editFoodItems")
-                                            
-                                        localStorage.setItem("_id", foodItem._id);
-                                        
+                                        navigate("/editFoodItem")       
+                                        localStorage.setItem("_id", foodItem._id);  
                                     }}>Edit</Button>
+                                    </TableCell>
+                                    <TableCell><Button variant ="contained" color="secondary" onClick={() => {
+                                        const fooditem = {
+                                            _id: foodItem._id,
+                                        }
+                                        axios.post("http://localhost:4000/FoodItems/deleteFoodItem", fooditem)
+                                            .then((response) => {
+                                                console.log(response.data);
+                                                window.location.reload();
+                                            });
+                                    }
+                                    }>Delete</Button>
                                     </TableCell>
                                 </TableRow>))}
                         </TableBody>

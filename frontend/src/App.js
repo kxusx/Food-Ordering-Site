@@ -19,6 +19,7 @@ import VendorFoodDashboard from "./components/common/vendorFoodDashboard";
 import VendorAddFoodItems from "./components/common/vendorAddFoodItems";
 import VendorOrdersList from "./components/common/vendorOrdersList";
 import EditFoodItem from "./components/common/editFoodItem";
+import VendorStatistics from "./components/common/vendorStatistics"
 
 const Layout = () => {
   return (
@@ -76,6 +77,7 @@ function App() {
           <Route path="vendorOrdersList"element={<VendorOrdersList/>}/>
           <Route path="vendorLogout"element={<VendorLogout/>}/>
           <Route path="EditFoodItem"element={<EditFoodItem/>}/>
+          <Route path="vendorStatistics"element={<VendorStatistics/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

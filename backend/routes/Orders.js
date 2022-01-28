@@ -36,6 +36,24 @@ router.post("/addOrder",function(req,res){
         });
 });
 
+router.post("/updateOrder",function(req,res){
+        const id = req.body._id;
+
+        Orders.findOne({_id : id}).then(order => {
+            order.status = req.body.status;
+
+            order.save()
+            .then(order => {
+                res.status(200).json(order);
+            })
+            .catch(err => {
+                res.status(400).send(err);
+            });
+    })
+        .catch(err => res.status(400).send(err))
+        
+});
+
 router.post("/getOrder",function(req,res){
     const email = req.body.email;
     

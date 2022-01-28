@@ -26,7 +26,7 @@ import React from "react";
 
 const VendorOrdersList = (props) => {
     const navigate = useNavigate();
-    const [orders,setOrders] = useState([]);
+    const [orders, setOrders] = useState([]);
     const [shopName, setShopName] = useState(localStorage.getItem("shopName"));
     const [foodName, setFoodName] = useState("");
     const [quantity, setQuantity] = useState("");
@@ -44,10 +44,11 @@ const VendorOrdersList = (props) => {
     const [addOnFlag, setAddOnFlag] = useState(false);
     const [tagFlag, setTagFlag] = useState(false);
     const [buyerEmail, setBuyerEmail] = useState("");
+    const [status, setStatus] = useState("");
 
     useEffect(() => {
-        const newOrder={
-            shopName:shopName,
+        const newOrder = {
+            shopName: shopName,
         }
         axios.post("http://localhost:4000/orders/getOrderBasedOnShop", newOrder)
             .then((response) => {
@@ -57,52 +58,79 @@ const VendorOrdersList = (props) => {
     }, []);
 
 
-    return(
+    return (
         <div>
-        
 
-        <Grid container align={"center"} spacing={2}>
-        <List component="nav" aria-label="mailbox folders">
-            <ListItem>
-                <h1>Your Orders</h1>
-            </ListItem>
-        </List>
-        </Grid>
 
-        <Grid item xs={12} md={9} lg={9}>
-          <Paper>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell> Sr No.</TableCell>
-                  <TableCell> Placed Time</TableCell>
-                  <TableCell>Shop Name</TableCell>
-                  <TableCell>Food Name</TableCell>
-                  <TableCell>Quantity</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Price</TableCell>
-                  <TableCell>Rating</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                  {orders.map((order, index) => (
-                      <TableRow key={index}>
-                            <TableCell>{index+1}</TableCell>
-                            <TableCell>{order.createdAt}</TableCell>
-                            <TableCell>{order.shopName}</TableCell>
-                            <TableCell>{order.foodName}</TableCell>
-                            <TableCell>{order.quantity}</TableCell>
-                            <TableCell> {order.status}</TableCell>
-                            <TableCell>{order.price}</TableCell>
-                            <TableCell>{order.rating}</TableCell>
-                        </TableRow>
-                    ))}
-              </TableBody>
-        </Table>
-        </Paper>
-        </Grid>
+            <Grid container align={"center"} spacing={2}>
+                <List component="nav" aria-label="mailbox folders">
+                    <ListItem>
+                        <h1>Your Orders</h1>
+                    </ListItem>
+                </List>
+            </Grid>
+
+            <Grid item xs={12} md={9} lg={9}>
+                <Paper>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell> Sr No.</TableCell>
+                                <TableCell> Placed Time</TableCell>
+                                <TableCell>Shop Name</TableCell>
+                                <TableCell>Food Name</TableCell>
+                                <TableCell>Quantity</TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell>Price</TableCell>
+                                <TableCell>Rating</TableCell>
+                                <TableCell>Move</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {orders.map((order, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell>{order.createdAt}</TableCell>
+                                    <TableCell>{order.shopName}</TableCell>
+                                    <TableCell>{order.foodName}</TableCell>
+                                    <TableCell>{order.quantity}</TableCell>
+                                    <TableCell> {order.status}</TableCell>
+                                    <TableCell>{order.price}</TableCell>
+                                    <TableCell>{order.rating}</TableCell>
+                                    <TableCell><Button variant="contained" color="secondary" onClick={() => {
+                                        console.log(order);
+                                        // if(order.status==="PLACED"){
+                                        //     setStatus("ACCEPTED");
+                                        // }else if(order.status==="ACCEPTED"){
+                                        //     setStatus("COOKING");
+                                        // }else if(order.status==="COOKING"){
+                                        //     setStatus("READY FOR PICKUP");
+                                        // }else if(order.status==="READY FOR PICKUP"){
+                                        //     setStatus("COMPLETED");
+                                        // }
+                                        status === "READY FOR PICKUP" ? setStatus("COMPLETED") : status ==="COOKING" ? setStatus("READY FOR PICKUP") : status ==="ACCEPTED" ? setStatus("COOKING") : setStatus("ACCEPTED");
+                                        
+                                        const newOrder = {
+                                            _id:order._id,
+                                            status: status,
+                                            
+                                        }
+                                        console.log(newOrder);
+                                        axios.post("http://localhost:4000/orders/updateOrder", newOrder)
+                                            .then((response) => {
+                                                console.log(response.data);
+                                                // setOrders(response.data);
+                                            });
+                                    }}>Move</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </Paper>
+            </Grid>
         </div>
-            
+
     );
 };
 

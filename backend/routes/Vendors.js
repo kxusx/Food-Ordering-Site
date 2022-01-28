@@ -40,6 +40,16 @@ router.post("/register", (req, res) => {
         });
 });
 
+router.post("/getVendor", (req, res) => {
+    const email = req.body.email;
+    Vendor.findOne({ email }).then(vendor => {
+        //res.json(buyer);
+        res.send(vendor);
+        return vendor;
+    });
+
+});
+
 //POST request 
 //Login
 router.post("/login", (req, res) => {
@@ -72,7 +82,14 @@ router.post("/changeProfile", (req,res)=>{
         vendor.contactNo = req.body.contactNo;
         vendor.openingTime = req.body.openingTime;
         vendor.closingTime = req.body.closingTime;
-        vendor.save();
-        res.send(vendor);
-    });
+        vendor.save()
+        .then(vendor => {
+            res.status(200).json(vendor);
+        })
+        .catch(err => {
+            res.status(400).send(err);
+        });
+    })
+    .catch(err => res.status(400).send(err))
+
 });
