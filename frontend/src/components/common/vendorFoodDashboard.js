@@ -80,6 +80,8 @@ const VendorFoodDashboard = (props) => {
                                 <TableCell>Veg/NonVeg</TableCell>
                                 <TableCell>Tags</TableCell>
                                 <TableCell>Price</TableCell>
+                                <TableCell>Edit</TableCell>
+                                <TableCell>Delete</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -110,6 +112,13 @@ const VendorFoodDashboard = (props) => {
                                         </List>
                                     </TableCell>
                                     <TableCell>{foodItem.price}</TableCell>
+                                    <TableCell><Button variant ="contained" color="primary" onClick={() => {
+                                        navigate("/editFoodItems")
+                                            
+                                        localStorage.setItem("_id", foodItem._id);
+                                        
+                                    }}>Edit</Button>
+                                    </TableCell>
                                 </TableRow>))}
                         </TableBody>
                     </Table>

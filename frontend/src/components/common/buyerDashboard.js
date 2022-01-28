@@ -23,6 +23,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { Navigate } from "react-router-dom";
 import {useNavigate} from "react-router-dom";
+import { Checkbox } from "@mui/material";
 
 const UsersList = (props) => {
   const navigate = useNavigate();
@@ -45,6 +46,17 @@ const UsersList = (props) => {
   const [inWallet, setInWallet] = useState("");
   const [email, setEmail] = useState(localStorage.getItem("email"));
   const [chosenFoodName,setChosenFoodName] = useState("");
+  const [chosenFoodItem,setChosenFoodItem] = useState("");
+  const [chosenAddOns,setChosenAddOns] = useState([]);
+  const [chosenAddOnsNameList,setChosenAddOnsNameList] = useState([]);
+  const [chosenAddOnsPriceList,setChosenAddOnsPriceList] = useState([]);
+  const [chosenAddOnIDList,setChosenAddOnIDList] = useState([]);
+  const [quantity,setQuantity] = useState(1);
+  const [totalCost,setTotalCost] = useState("");
+
+  
+  
+  
 
   const onChangeWallet = (event) => {
     setWallet(event.target.value);
@@ -61,6 +73,29 @@ const UsersList = (props) => {
   const onChangeSearch = (event) => {
     setSearch(event.target.value);
   };
+
+  const addAddon = (event,addon) => {
+    console.log(addon);
+    let chosenAddOnID = addon._id;
+    let chosenAddOnName = addon.addOnName;
+    let chosenAddOnPrice = addon.addOnPrice;
+    console.log(chosenAddOnPrice);
+
+    if(!chosenAddOnIDList.includes(chosenAddOnID)){
+      setChosenAddOnIDList(chosenAddOns.concat(chosenAddOnID));
+      setChosenAddOnsNameList(chosenAddOnsNameList.concat(chosenAddOnName));
+      setChosenAddOnsPriceList(chosenAddOnsPriceList.concat(parseInt(chosenAddOnPrice)));
+    }else{
+      let index = chosenAddOnIDList.indexOf(chosenAddOnID);
+      let newChosenAddOns = chosenAddOnIDList.slice(0,index).concat(chosenAddOnIDList.slice(index+1));
+      let newChosenAddOnsNameList = chosenAddOnsNameList.slice(0,index).concat(chosenAddOnsNameList.slice(index+1));
+      let newChosenAddOnsPriceList = chosenAddOnsPriceList.slice(0,index).concat(chosenAddOnsPriceList.slice(index+1));
+      setChosenAddOnIDList(newChosenAddOns);
+      setChosenAddOnsNameList(newChosenAddOnsNameList);
+      setChosenAddOnsPriceList(newChosenAddOnsPriceList);
+    }
+  };
+
 
   useEffect(() => {
     let temp;
@@ -234,10 +269,54 @@ const UsersList = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    let totalAddOnPrice=0;
+    
+    chosenAddOnsPriceList.forEach((price) => {
+      totalAddOnPrice += price;
+    }
+    );
+
+    console.log(totalAddOnPrice);
+
+    let totalPrice = quantity * (chosenFoodItem.price + totalAddOnPrice);
+    console.log(totalPrice);
+
+    const newOrder = {  
+      buyerEmail: email,
+      foodName: chosenFoodItem.foodName,
+      shopName: chosenFoodItem.shopName,
+      price: totalPrice,
+      veg: chosenFoodItem.veg,
+      status: "PLACED",
+      quantity: quantity,
+      addOns: chosenAddOnsNameList,
+      rating: 0,
   };
 
-  const handleClickOpen = () => {
+  if (inWallet >= totalPrice) {
+    setInWallet(inWallet - chosenFoodItem.price);
+    const newBuyer = {
+      email: email,
+      wallet: inWallet - chosenFoodItem.price
+    };
+    axios.post("http://localhost:4000/buyer/setWallet", newBuyer)
+      .then((response) => {
+        // console.log(response);
+      });
+    axios.post("http://localhost:4000/orders/addOrder", newOrder)
+                          .then((response) => {
+                            console.log(response);
+                            navigate("/buyerOrders");
+                          });
+  }else{
+    alert("Not enuf money boi");
+  }
+
+};
+
+  const handleClickOpen = (event) => {
     setOpen(true);
+    console.log(chosenFoodItem);
   };
 
   const handleClose = () => {
@@ -437,7 +516,12 @@ const UsersList = (props) => {
                     </TableCell>
                     <TableCell>{foodItem.price}</TableCell>
                     <TableCell>
-                      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+                      <Button variant="contained" color="primary" onClick={() => {
+                      setChosenAddOns(foodItem.addOns);
+                      setChosenFoodItem(foodItem);
+                      handleClickOpen();
+                    }}
+                    >
                         Order
                     </Button></TableCell>
                   </TableRow>
@@ -451,32 +535,71 @@ const UsersList = (props) => {
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add Food Item</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Add Food Item
-          </DialogContentText>
-
+          
             <TextField  
               id="standard-basic"
               label="Food Name"
-              fullWidth={true}
-              //value={foodName}
+              value={chosenFoodItem.foodName}
             />
             <TextField
               id="standard-basic"
               label="Price"
-              fullWidth={true}
-              
+              value={chosenFoodItem.price}
             />
 
+           <Grid container spacing={2}>
+          {
+          
+           chosenAddOns.map((addon, i) => (
+                        <Grid container>
+                            <Grid item xs ={12} style={{height: 50}}>
+                            <h5>Add-on {i+1}</h5>
+                            </Grid>
+                            <Grid item xs={5}>
+                            <TextField 
+                            autoFocus
+                            margin="dense"
+                            label={"Name"}
+                            fullWidth
+                            variant="outlined"
+                            value={chosenAddOns[i].addOnName}
+                            style={{width: 190}}
+                            /> 
+                            </Grid>
+                            <Grid item xs={5}>
+                            <TextField 
+                            autoFocus
+                            margin="dense"
+                            label={"Price (in Rs)"}
+                            fullWidth
+                            variant="outlined"
+                            value={chosenAddOns[i].addOnPrice}
+                            style={{width: 190}}
+                            /> 
+                            </Grid>
+                            <Grid item xs={2}>
+                            <Checkbox aria-label="controlled" onChange={(event) => addAddon(event,addon)} />
+                            </Grid>                              
+                        </Grid>
+                        ))} 
+          </Grid>
+
+          <TextField
+              id="standard-basic"
+              label="Quantity"
+              value={quantity}
+              onChange  = {(event) => setQuantity(event.target.value)}
+            />  
 
 
+            
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            Add
+            Order
           </Button>
         </DialogActions>
       </Dialog>
