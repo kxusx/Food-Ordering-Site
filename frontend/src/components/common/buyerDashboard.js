@@ -213,22 +213,30 @@ const UsersList = (props) => {
     }
 
     if (chosenTag !== "" && chosenTag != null) {
-      //result = result.filter((item)=> item.tags == chosenShopName);
-      //console.log(chosenTag);
-      //result = result.filter((item)=> { 
-      let flag, counter = 0;
-      result.forEach((foodItem) => {
-        flag = 0;
-        foodItem.tag.forEach((tage) => {
-          if (tage == chosenTag) {
-            flag = 1;
-          }
-        });
-        if (flag == 0) {
-          result.splice(counter, 1);
-        }
-        counter++;
-      });
+     
+      console.log(chosenTag);
+      console.log(result);
+
+      result = result.filter((item) => item.tag.includes(chosenTag));
+
+
+      // let flag, counter = 0;
+      // result.forEach((foodItem) => {
+      //   flag = 0;
+      //   foodItem.tag.forEach((tage) => {
+      //     if (tage == chosenTag) {
+      //       flag = 1;
+      //       console.log(1);
+      //     }
+      //   });
+      //   if (flag == 0) {
+      //     result.splice(counter, 1);
+      //   }else{
+      //     counter++;
+      //   }
+        
+      // });
+      //console.log(result);
     }
 
     if (chosenVeg !== "" && chosenVeg != null) {
@@ -279,10 +287,10 @@ const UsersList = (props) => {
     }
     );
 
-    console.log(totalAddOnPrice);
+    //console.log(totalAddOnPrice);
 
     let totalPrice = quantity * (chosenFoodItem.price + totalAddOnPrice);
-    console.log(totalPrice);
+    //console.log(totalPrice);
 
     const newOrder = {  
       buyerEmail: email,
@@ -319,7 +327,7 @@ const UsersList = (props) => {
 
   const handleClickOpen = (event) => {
     setOpen(true);
-    console.log(chosenFoodItem);
+   //console.log(chosenFoodItem);
   };
 
   const handleClose = () => {
@@ -492,7 +500,7 @@ const UsersList = (props) => {
                       <List>
                         {
                           tags.map((tagItem, ind) => {
-                            console.log(tagItem);
+                            //console.log(tagItem);
                             if (foodItem.tag.includes(tagItem)) {
                               return (
                                 <ListItem key={ind}>
