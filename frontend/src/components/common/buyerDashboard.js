@@ -52,6 +52,7 @@ const UsersList = (props) => {
   const [chosenAddOnsPriceList,setChosenAddOnsPriceList] = useState([]);
   const [chosenAddOnIDList,setChosenAddOnIDList] = useState([]);
   const [quantity,setQuantity] = useState(1);
+  const [sortName, setSortName] = useState(true);
   const [totalCost,setTotalCost] = useState("");
 
   
@@ -96,6 +97,20 @@ const UsersList = (props) => {
     }
   };
 
+  const sortChange = () => {
+    let usersTemp = permFoodItems.slice();
+    const flag = sortName;
+    usersTemp.sort((a, b) => {
+      if (flag) {
+        return a.foodName < b.foodName ? -1 : 1;
+      } else {
+        return a.foodName > b.foodName ? -1 : 1;
+      }
+    });
+    setFoodItems(usersTemp);
+    setPermFoodItems(usersTemp);
+    setSortName(!sortName);
+  };
 
   useEffect(() => {
     let temp;
@@ -144,21 +159,9 @@ const UsersList = (props) => {
           }
         });
 
-        response.data.forEach((foodItem) => {
-          for (let j = 0; j < foodItem.addOns.length; j++) {
-            if (!listAddOnsName.includes(foodItem.addOnsName[j])) {
-              listAddOnsName.push(foodItem.addOnsName[j]);
-            }
-          }
-        });
 
-        response.data.forEach((foodItem) => {
-          for (let j = 0; j < foodItem.addOns.length; j++) {
-            if (!listAddOnsPrice.includes(foodItem.addOnsPrice[j])) {
-              listAddOnsPrice.push(foodItem.addOnsPrice[j]);
-            }
-          }
-        });
+
+
         console.log("g");
         //console.log(listAddOns);
         console.log(listAddOnsName);
@@ -179,10 +182,10 @@ const UsersList = (props) => {
 
         //console.log(listAddOns);
         setVeg(['Veg', 'NonVeg']);
-
+        
         // console.log(listTags);
         // console.log(listShopNames);
-        // console.log(tags);
+         console.log(tags);
         // console.log(shopNames);
         // console.log(veg);
 
@@ -297,7 +300,7 @@ const UsersList = (props) => {
     setInWallet(inWallet - chosenFoodItem.price);
     const newBuyer = {
       email: email,
-      wallet: inWallet - chosenFoodItem.price
+      wallet: inWallet - totalPrice
     };
     axios.post("http://localhost:4000/buyer/setWallet", newBuyer)
       .then((response) => {
@@ -461,7 +464,13 @@ const UsersList = (props) => {
                   <TableCell>Veg/NonVeg</TableCell>
                   <TableCell>Tags</TableCell>
                   {/* <TableCell>AddOns</TableCell> */}
-                  <TableCell>Price</TableCell>
+                  <TableCell>
+                  {" "}
+                    <Button onClick={sortChange}>
+                      {sortName ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+                    </Button>
+
+                    Price</TableCell>
                   <TableCell>Order</TableCell>
                   
                 </TableRow>
@@ -483,6 +492,7 @@ const UsersList = (props) => {
                       <List>
                         {
                           tags.map((tagItem, ind) => {
+                            console.log(tagItem);
                             if (foodItem.tag.includes(tagItem)) {
                               return (
                                 <ListItem key={ind}>
@@ -494,26 +504,6 @@ const UsersList = (props) => {
                         }
                       </List>
                     </TableCell>
-                    {/* <TableCell>
-                      <List>
-                        {
-
-                          addOnsNameList.map((addOnItem, ind) => {
-                            // addOnsPriceList.map((addOnPriceItem, ind) => {
-                            if (foodItem.addOnsName.includes(addOnItem)) {
-                              return (
-                                <ListItem key={ind}>
-                                  <Chip label={addOnItem} />
-                                  
-                                </ListItem>
-                                
-                              );
-                            }
-                          })
-                        }
-                      </List>
-
-                    </TableCell> */}
                     <TableCell>{foodItem.price}</TableCell>
                     <TableCell>
                       <Button variant="contained" color="primary" onClick={() => {

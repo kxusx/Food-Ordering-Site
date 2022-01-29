@@ -22,24 +22,163 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } 
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { Navigate } from "react-router-dom";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Checkbox } from "@mui/material";
 
-const vendorStatistics = (props) => {
+
+const VendorStatistics = (props) => {
+    const navigate = useNavigate();
+    const [vendor, setVendor] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [shopName, setShopName] = useState("");
+    const [email, setEmail] = useState(localStorage.getItem("email"));
     const [ordersPlacedCount, setOrdersPlacedCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
     const [completedOrdersCount, setCompletedOrdersCount] = useState(0);
+    const [list, setList] = useState([]);
+    const [listNames,setListNames] = useState([]);
 
-    const fooditems = {
-        shopName: shopName,
-    }
-    console.log(fooditems);
-    console.log(shopName);
-    axios.post("http://localhost:4000/FoodItems/getFoodItems", fooditems)
-        .then((response) => {
-            setFoodItems(response.data);
-            console.log(response.data);
-        });
+    useEffect(() => {
+        const v = {
+            email: email,
+        }
+        let x = 0, y = 0, z = 0;
+        let arr = [];
+        axios.post("http://localhost:4000/vendor/getVendor", v)
+            .then(res => {
+                setVendor(res.data);
+                setShopName(res.data.shopName);
+                console.log(res.data);
+                console.log("s");
+                console.log(res.data.shopName);
+                const newOrder = {
+                    shopName: res.data.shopName,
+                }
+
+                console.log(newOrder);
+                axios.post("http://localhost:4000/orders/getOrderBasedOnShop", newOrder)
+                    .then((response) => {
+
+                        setOrders(response.data);
+                        console.log(response.data);
+                        response.data.forEach(order => {
+
+                            if (order.status === "COMPLETED") {
+                                x = x + 1;
+                                //console.log("completed");
+                                setCompletedOrdersCount(x);
+                                if (!arr.some(food => food.name === order.foodName)) {
+                                    arr.push({ name: order.foodName, quantity: order.quantity })
+                                    //console.log("efwef");
+                                }
+                                else
+                                    arr.map(food => {
+                                        if (food.name === order.foodname)
+                                            food.quantity += order.quantity
+                                    })
+                            } else if (order.status === "ACCEPTED" || order.status === "COOKING" || order.status === "READY FOR PICKUP") {
+                                y = y + 1;
+                               // console.log("pending");
+                                setPendingOrdersCount(y);
+                            }
+                            z = z + 1;
+                            setOrdersPlacedCount(z);
+                            arr.sort((a, b) => b.quantity - a.quantity)
+
+                        });
+                        setList(arr);
+                        //console.log(arr);
+
+                    });
+            });
+
+
+        console.log(x + y + z);
+        console.log(listNames);
+
+        //console.log(orders);
+
+
+
+    }, []);
+
+    return (
+        <div>
+            <Grid container spacing={3}>
+                <Grid item xs={12}>
+                    <Paper>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Shop Name</TableCell>
+                                    <TableCell>Orders Placed</TableCell>
+                                    <TableCell>Pending Orders</TableCell>
+                                    <TableCell>Completed Orders</TableCell>
+                                    <TableCell>Top 5</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>{shopName}</TableCell>
+                                    <TableCell>{ordersPlacedCount}</TableCell>
+                                    <TableCell>{pendingOrdersCount}</TableCell>
+
+                                    <TableCell>{completedOrdersCount}</TableCell>
+                                    <TableCell>
+                                        <List>
+                                            {
+                                                
+                                                list.map((tagItem, ind) => {
+                                                    return (
+                                                        <ListItem key={ind}>
+                                                            <Chip label={tagItem.name} />
+                                                        </ListItem>
+                                                    );
+                                                })
+                                            }
+                                        </List>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </Paper>
+                </Grid>
+            </Grid>
+        </div>
+    );
+
 };
-export default vendorStatistics;
+export default VendorStatistics;
+
+// axios
+//     .post("http://localhost:4000/order/vendororders", Canteen)
+//     .then((response) => {
+//         setOrders(response.data);
+
+//         let arr = [];
+//         let CompletedCount = 0;
+//         let PendingCount = 0;
+//         response.data.map(order => {
+//             if (order.status === "Completed") {
+//                 CompletedCount++;
+//                 if (!arr.some(food => food.name === order.foodname))
+//                     arr.push({ name: order.foodname, quantity: order.quantity })
+//                 else
+//                     arr.map(food => {
+//                         if (food.name === order.foodname)
+//                             food.quantity += order.quantity
+//                     })
+//             }
+//             else if (orders.status != "Rejected")
+//                 PendingCount++;
+//         })
+
+//         arr.sort((a, b) => b.quantity - a.quantity)
+//         setTopfiveitems(arr.splice(0, 5))
+//         setPlacedorders(orders.length);
+//         setCompletedorders(CompletedCount);
+//         setPendingorders(PendingCount);
+//     })
+//     .catch((error) => {
+//         console.log(error);
+//     })

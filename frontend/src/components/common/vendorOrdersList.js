@@ -45,6 +45,8 @@ const VendorOrdersList = (props) => {
     const [tagFlag, setTagFlag] = useState(false);
     const [buyerEmail, setBuyerEmail] = useState("");
     const [status, setStatus] = useState("");
+    const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
+    const [acceptedOrdersCount, setAcceptedOrdersCount] = useState(0);
 
     useEffect(() => {
         const newOrder = {
@@ -56,6 +58,10 @@ const VendorOrdersList = (props) => {
 
             });
     }, []);
+
+    function timeout(delay) {
+        return new Promise( res => setTimeout(res, delay) );
+    }
 
 
     return (
@@ -98,21 +104,35 @@ const VendorOrdersList = (props) => {
                                     <TableCell>{order.price}</TableCell>
                                     <TableCell>{order.rating}</TableCell>
                                     <TableCell><Button variant="contained" color="secondary" onClick={() => {
+                                        let count = 0;
+                                        for(let i = 0 ; orders[i] != undefined ; i++)
+                                          if(orders[i].status == "ACCEPTED" || orders[i].status == "COOKING")
+                                            count++;
                                         console.log(order);
-                                        // if(order.status==="PLACED"){
-                                        //     setStatus("ACCEPTED");
-                                        // }else if(order.status==="ACCEPTED"){
-                                        //     setStatus("COOKING");
-                                        // }else if(order.status==="COOKING"){
-                                        //     setStatus("READY FOR PICKUP");
-                                        // }else if(order.status==="READY FOR PICKUP"){
-                                        //     setStatus("COMPLETED");
-                                        // }
-                                        status === "READY FOR PICKUP" ? setStatus("COMPLETED") : status ==="COOKING" ? setStatus("READY FOR PICKUP") : status ==="ACCEPTED" ? setStatus("COOKING") : setStatus("ACCEPTED");
+                                        console.log(count);
+                                        let str="";
+                                        if(order.status==="PLACED" && count<10) {
+                                            str="ACCEPTED"
+                                            //setStatus("ACCEPTED");
+                                        }else if(order.status==="ACCEPTED"){
+                                            str="COOKING"
+                                           // setStatus("COOKING");
+                                        }else if(order.status==="COOKING"){
+                                            str="READY FOR PICKUP"
+                                           // setStatus("READY FOR PICKUP");
+                                        }else if(order.status==="READY FOR PICKUP"){
+                                            str="COMPLETED"
+                                           //setStatus("COMPLETED");
+                                        }else{
+                                            alert("cannot accept more than 10 orders");
+                                        }
+                                        setStatus(str);
+                                        //await timeout(1000);
+                                        // status === "READY FOR PICKUP" ? setStatus("COMPLETED") : status ==="COOKING" ? setStatus("READY FOR PICKUP") : status ==="ACCEPTED" ? setStatus("COOKING") : setStatus("ACCEPTED");
                                         
                                         const newOrder = {
                                             _id:order._id,
-                                            status: status,
+                                            status: str,
                                             
                                         }
                                         console.log(newOrder);
@@ -121,6 +141,8 @@ const VendorOrdersList = (props) => {
                                                 console.log(response.data);
                                                 // setOrders(response.data);
                                             });
+                                          //  alert("Order moved to "+str);
+                                        window.location.reload();
                                     }}>Move</Button>
                                     </TableCell>
                                 </TableRow>
