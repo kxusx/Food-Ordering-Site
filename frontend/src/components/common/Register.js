@@ -8,7 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
- 
+
 const Register = (props) => {
   const [choice, setChoice] = useState("");
   const [name, setName] = useState("");
@@ -27,19 +27,19 @@ const Register = (props) => {
     setChoice(event.target.value);
   };
 
-  const onChangeManagerName = (event)=>{
+  const onChangeManagerName = (event) => {
     setManagerName(event.target.value);
-  } 
+  }
 
-  const onChangeShopName = (event)=>{
+  const onChangeShopName = (event) => {
     setShopName(event.target.value);
   }
 
-  const onChangeOpeningTime = (event)=>{
+  const onChangeOpeningTime = (event) => {
     setOpeningTime(event.target.value);
   }
 
-  const onChangeClosingTime = (event)=>{
+  const onChangeClosingTime = (event) => {
     setClosingTime(event.target.value);
   }
 
@@ -82,76 +82,97 @@ const Register = (props) => {
   };
 
   const onSubmitBuyer = (event) => {
+
     event.preventDefault();
-    if(age<0){
+    var regex = /[^\s@]+@[^\s@]+.[^\s@]+/;
+
+    if (age < 0) {
       alert("Age cannot be negative");
-    }else{
-      const newBuyer = {
-        name: name,
-        email: email,
-        password: password,
-        contactNo: contactNo,
-        age: age,
-        batchName: batchName,
-        wallet:0,
-        date: Date.now(),
-      };
-  
-      axios
-        .post("http://localhost:4000/buyer/register", newBuyer)
-        .then((response) => {
-          alert("Created\t" + response.data.name);
-          console.log(response.data);
-        });
-  
-      resetInputs();
+    } else {
+      if (name != "" && email != "" && password != "" && contactNo != "" && age != "" && batchName != "" && regex.test(email)) {
+        const newBuyer = {
+          name: name,
+          email: email,
+          password: password,
+          contactNo: contactNo,
+          age: age,
+          batchName: batchName,
+          wallet: 0,
+          date: Date.now(),
+        };
+
+        axios
+          .post("http://localhost:4000/buyer/register", newBuyer)
+          .then((response) => {
+            alert("Created\t" + response.data.name);
+            console.log(response.data);
+          });
+
+        resetInputs();
+      } else {
+        if (!regex.test(email)) {
+          alert("Enter Valid Email ID");
+        } else {
+          alert("Enter Valid Details");
+        }
+      }
     }
   };
 
   const onSubmitVendor = (event) => {
     event.preventDefault();
+    var regex = /[^\s@]+@[^\s@]+.[^\s@]+/;
 
-    const newVendor = {
-      managerName: managerName,
-      shopName: shopName,
-      email: email,
-      password: password,
-      contactNo: contactNo,
-      openingTime: openingTime,
-      closingTime: closingTime,
-      date: Date.now(),
-    };
+    if (managerName != "" && shopName != "" && openingTime != "" && closingTime != "" && password != "" && contactNo != "" && regex.test(email)) {
+      const newVendor = {
+        managerName: managerName,
+        shopName: shopName,
+        email: email,
+        password: password,
+        contactNo: contactNo,
+        openingTime: openingTime,
+        closingTime: closingTime,
+        date: Date.now(),
+      };
 
-    axios
-      .post("http://localhost:4000/vendor/register", newVendor)
-      .then((response) => {
-        alert("Register");
-        console.log(response.data);
-      });
+      axios
+        .post("http://localhost:4000/vendor/register", newVendor)
+        .then((response) => {
+          alert("Register");
+          console.log(response.data);
+        });
 
-    resetInputs();
+      resetInputs();
+    } else {
+      if (!regex.test(email)) {
+        alert("Enter Valid Email ID");
+      } else {
+        alert("Enter Valid Details");
+      }
+    }
   };
 
-  if(choice==1){
+
+  if (choice == 1) {
     return (
       <>
-      <Box sx={{ minWidth: 120 }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Choose</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={choice}
-            label="Choose"
-            onChange={handleChange}
-          >
-            <MenuItem value={2}>Vendor</MenuItem>
-            <MenuItem value={1}>Buyer</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      
-      <Grid container align={"center"} spacing={2}>
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Choose</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={choice}
+              label="Choose"
+              onChange={handleChange}
+            >
+              <MenuItem value={2}>Vendor</MenuItem>
+              <MenuItem value={1}>Buyer</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Grid container align={"center"} spacing={2}>
           <Grid item xs={12}>
             <TextField
               label="Name"
@@ -201,28 +222,28 @@ const Register = (props) => {
           </Grid>
         </Grid>
       </>
-  
+
     );
-  }else{
+  } else {
     return (
       <>
-      <Box sx={{ minWidth: 120 }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Choose</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={2}
-            label="Choose"
-            onChange={handleChange}
-          >
-            <MenuItem value={2}>Vendor</MenuItem>
-            <MenuItem value={1}>Buyer</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      
-      <Grid container align={"center"} spacing={2}>
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Choose</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={2}
+              label="Choose"
+              onChange={handleChange}
+            >
+              <MenuItem value={2}>Vendor</MenuItem>
+              <MenuItem value={1}>Buyer</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Grid container align={"center"} spacing={2}>
           <Grid item xs={12}>
             <TextField
               label="Manager Name"
@@ -279,7 +300,7 @@ const Register = (props) => {
           </Grid>
         </Grid>
       </>
-  
+
     );
   }
 

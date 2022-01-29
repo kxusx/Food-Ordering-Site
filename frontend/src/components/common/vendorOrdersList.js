@@ -47,6 +47,7 @@ const VendorOrdersList = (props) => {
     const [status, setStatus] = useState("");
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
     const [acceptedOrdersCount, setAcceptedOrdersCount] = useState(0);
+    const [wallet, setWallet] = useState(0);
 
     useEffect(() => {
         const newOrder = {
@@ -60,7 +61,7 @@ const VendorOrdersList = (props) => {
     }, []);
 
     function timeout(delay) {
-        return new Promise( res => setTimeout(res, delay) );
+        return new Promise(res => setTimeout(res, delay));
     }
 
 
@@ -90,6 +91,7 @@ const VendorOrdersList = (props) => {
                                 <TableCell>Price</TableCell>
                                 <TableCell>Rating</TableCell>
                                 <TableCell>Move</TableCell>
+                                <TableCell>Reject</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -105,35 +107,35 @@ const VendorOrdersList = (props) => {
                                     <TableCell>{order.rating}</TableCell>
                                     <TableCell><Button variant="contained" color="secondary" onClick={() => {
                                         let count = 0;
-                                        for(let i = 0 ; orders[i] != undefined ; i++)
-                                          if(orders[i].status == "ACCEPTED" || orders[i].status == "COOKING")
-                                            count++;
-                                        console.log(order);
-                                        console.log(count);
-                                        let str="";
-                                        if(order.status==="PLACED" && count<10) {
-                                            str="ACCEPTED"
+                                        for (let i = 0; orders[i] != undefined; i++)
+                                            if (orders[i].status == "ACCEPTED" || orders[i].status == "COOKING")
+                                                count++;
+                                        // console.log(order);
+                                        // console.log(count);
+                                        let str = "";
+                                        if (order.status === "PLACED" && count < 10) {
+                                            str = "ACCEPTED"
                                             //setStatus("ACCEPTED");
-                                        }else if(order.status==="ACCEPTED"){
-                                            str="COOKING"
-                                           // setStatus("COOKING");
-                                        }else if(order.status==="COOKING"){
-                                            str="READY FOR PICKUP"
-                                           // setStatus("READY FOR PICKUP");
-                                        }else if(order.status==="READY FOR PICKUP"){
-                                            str="COMPLETED"
-                                           //setStatus("COMPLETED");
-                                        }else{
+                                        } else if (order.status === "ACCEPTED") {
+                                            str = "COOKING"
+                                            // setStatus("COOKING");
+                                        } else if (order.status === "COOKING") {
+                                            str = "READY FOR PICKUP"
+                                            // setStatus("READY FOR PICKUP");
+                                        } else if (order.status === "READY FOR PICKUP") {
+                                            str = "COMPLETED"
+                                            //setStatus("COMPLETED");
+                                        } else {
+                                            if(count>=10)
                                             alert("cannot accept more than 10 orders");
+                                            else
+                                            alert("cannot move more");
                                         }
                                         setStatus(str);
-                                        //await timeout(1000);
-                                        // status === "READY FOR PICKUP" ? setStatus("COMPLETED") : status ==="COOKING" ? setStatus("READY FOR PICKUP") : status ==="ACCEPTED" ? setStatus("COOKING") : setStatus("ACCEPTED");
-                                        
                                         const newOrder = {
-                                            _id:order._id,
+                                            _id: order._id,
                                             status: str,
-                                            
+
                                         }
                                         console.log(newOrder);
                                         axios.post("http://localhost:4000/orders/updateOrder", newOrder)
@@ -141,9 +143,59 @@ const VendorOrdersList = (props) => {
                                                 console.log(response.data);
                                                 // setOrders(response.data);
                                             });
-                                          //  alert("Order moved to "+str);
+                                        //  alert("Order moved to "+str);
                                         window.location.reload();
                                     }}>Move</Button>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button variant="contained" color="secondary" onClick={() => {
+                                            if (order.status == "PLACED") {
+                                                const newOrder = {
+                                                    _id: order._id,
+                                                    status: "REJECTED",
+                                                }
+                                                console.log(newOrder);
+                                                axios.post("http://localhost:4000/orders/updateOrder", newOrder)
+                                                    .then((response) => {
+                                                        console.log(response.data);
+                                                        // setOrders(response.data);
+                                                    });
+
+
+                                                let orderCost = order.price;
+                                                let buyerEmail = order.buyerEmail;
+                                                let walletBalance = 0;
+                                                console.log(buyerEmail);
+
+                                                // const o = {
+                                                //     email: buyerEmail,
+                                                // }
+                                                // axios.post("http://localhost:4000/buyer/getWallet", o)
+                                                //     .then((response) => {
+                                                //         walletBalance = response.data.wallet;
+                                                //         setWallet(walletBalance);
+                                                //     });
+
+                                                // console.log("w"+walletBalance);
+                                                // console.log(wallet);
+                                                console.log(orderCost);
+                                                const newUser = {
+                                                    email: buyerEmail,
+                                                    wallet: parseInt(orderCost),
+                                                }
+                                                console.log(newUser);
+                                                axios.post("http://localhost:4000/buyer/addToWallet", newUser)
+                                                    .then((response) => {
+                                                        console.log(response.data);
+                                                        // setOrders(response.data);
+                                                    });
+
+
+                                                // window.location.reload();
+                                            } else {
+                                                alert("Order cannot be rejected");
+                                            }
+                                        }}>Reject</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}

@@ -1,63 +1,15 @@
-# MERN Stack Boilerplate
+The website allows for vendor and buyer to register themselves with valid email id, and then log in with their credentials
 
-## Installations
-
-### Node
-
-* For Linux:
-```
-curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-* For Mac:
-```
-brew install node
-```
-
-### MongoDB
-
-Install the community edition [here](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials).
+It allows the buyer to filter, sort through all food items available, and also allows to place order.
+Buyer can also see his order list, and their status
+Buyer can edit his profile too
+Buyer can add to his wallet
+Buyer can then logout
 
 
-### React
+The website allows the vendor to add food items along with its addOns, and tags and also allows the vendor to edit them later
+It also allows for keeping check on orders placed at the shop and moving the items to next stage.
+Vendor can also edit his profile
+Vendor can also look at the statistics of his shop
 
-```
-npm install -g create-react-app
-```
-
-* To create a new React app:
-```
-create-react-app name_of_app
-```
-
-* To run the app, cd into the directory and do:
-```
-npm start
-```
-
-## Running the boilerplate
-
-* Run Mongo daemon:
-```
-sudo mongod
-```
-Mongo will be running on port 27017.
-
-
-* Run Express Backend:
-```
-cd backend/
-npm install
-npm start
-```
-
-* Run React Frontend:
-```
-cd frontend
-npm install/
-npm start
-```
-
-Navigate to [http://localhost:3000/](http://localhost:3000/) in your browser.
-
+I have removed the node modules of both backend and frontend folders. Since only my fuse.js exists in a node_modules outside both frontend and backend i am keeping it.

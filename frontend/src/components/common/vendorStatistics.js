@@ -149,36 +149,3 @@ const VendorStatistics = (props) => {
 
 };
 export default VendorStatistics;
-
-// axios
-//     .post("http://localhost:4000/order/vendororders", Canteen)
-//     .then((response) => {
-//         setOrders(response.data);
-
-//         let arr = [];
-//         let CompletedCount = 0;
-//         let PendingCount = 0;
-//         response.data.map(order => {
-//             if (order.status === "Completed") {
-//                 CompletedCount++;
-//                 if (!arr.some(food => food.name === order.foodname))
-//                     arr.push({ name: order.foodname, quantity: order.quantity })
-//                 else
-//                     arr.map(food => {
-//                         if (food.name === order.foodname)
-//                             food.quantity += order.quantity
-//                     })
-//             }
-//             else if (orders.status != "Rejected")
-//                 PendingCount++;
-//         })
-
-//         arr.sort((a, b) => b.quantity - a.quantity)
-//         setTopfiveitems(arr.splice(0, 5))
-//         setPlacedorders(orders.length);
-//         setCompletedorders(CompletedCount);
-//         setPendingorders(PendingCount);
-//     })
-//     .catch((error) => {
-//         console.log(error);
-//     })
