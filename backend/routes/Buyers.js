@@ -60,11 +60,10 @@ router.post("/changeProfile", (req, res) => {
     })
         .catch(err => res.status(400).send(err))
 });
-
+ 
 router.post("/getUser", (req, res) => {
     const email = req.body.email;
     Buyer.findOne({ email }).then(buyer => {
-        //res.json(buyer);
         res.send(buyer);
         return buyer;
     });
