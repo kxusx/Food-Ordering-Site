@@ -40,7 +40,7 @@ const BuyerWallet = (props) => {
             email: email
           };
       
-          axios.post("http://localhost:4000/buyer/getWallet",newBuyer)
+          axios.post("/backend/buyer/getWallet",newBuyer)
             .then((response) => {
               setInWallet(response.data.wallet);
             });
@@ -56,7 +56,7 @@ const BuyerWallet = (props) => {
             email: email
         }
         axios
-            .post("http://localhost:4000/buyer/addToWallet", newWallet)
+            .post("/backend/buyer/addToWallet", newWallet)
             .then((response) => {
                 //alert("Added " + wallet);
                 setWallet(response.data.wallet);

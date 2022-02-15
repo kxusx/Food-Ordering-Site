@@ -48,7 +48,7 @@ const EditFoodItem = (props) => {
             _id: id,
         }
         axios
-            .post("http://localhost:4000/foodItems/getFoodItemBasedOnID", o)
+            .post("/backend/foodItems/getFoodItemBasedOnID", o)
             .then((response) => {
                 console.log("fh");
                 console.log(response.data);
@@ -226,7 +226,7 @@ const EditFoodItem = (props) => {
                 }
                 console.log(o);
                 axios
-                    .post("http://localhost:4000/foodItems/updateFoodItem", o)
+                    .post("/backend/foodItems/updateFoodItem", o)
                     .then((response) => {
                         console.log(response.data);
                         alert("Food Item Updated");

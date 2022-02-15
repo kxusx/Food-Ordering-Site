@@ -57,7 +57,7 @@ const VendorProfile = (props) => {
         const o = {
             email: email,
         }
-        axios.post("http://localhost:4000/vendor/getVendor", o)
+        axios.post("/backend/vendor/getVendor", o)
             .then(res => {
                 console.log(res.data);
                 setManagerName(res.data.managerName);
@@ -80,7 +80,7 @@ const VendorProfile = (props) => {
             openingTime: openingTime,
             closingTime: closingTime
         };
-        axios.post('http://localhost:4000/vendor/changeProfile', vendor)
+        axios.post('/backend/vendor/changeProfile', vendor)
             .then((response) => {
                 alert("Update");
                 console.log(response.data);

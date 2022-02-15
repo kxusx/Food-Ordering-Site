@@ -118,7 +118,7 @@ const UsersList = (props) => {
       email: email
     };
       setOpen(false);
-    axios.post("http://localhost:4000/buyer/getWallet", newBuyer)
+    axios.post("/backend/buyer/getWallet", newBuyer)
       .then((response) => {
         setInWallet(response.data.wallet);
         temp = response.data.wallet;
@@ -129,7 +129,7 @@ const UsersList = (props) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/foodItems")
+      .get("/backend/foodItems")
       .then((response) => {
         setFoodItems(response.data);
         setPermFoodItems(response.data);
@@ -310,11 +310,11 @@ const UsersList = (props) => {
       email: email,
       wallet: inWallet - totalPrice
     };
-    axios.post("http://localhost:4000/buyer/setWallet", newBuyer)
+    axios.post("/backend/buyer/setWallet", newBuyer)
       .then((response) => {
         // console.log(response);
       });
-    axios.post("http://localhost:4000/orders/addOrder", newOrder)
+    axios.post("/backend/orders/addOrder", newOrder)
                           .then((response) => {
                             console.log(response);
                             navigate("/buyerOrders");
@@ -614,7 +614,7 @@ export default UsersList;
                       //     wallet: inWallet - foodItem.price
                       //   };
 
-                      //   axios.post("http://localhost:4000/buyer/setWallet", newBuyer)
+                      //   axios.post("/backend/buyer/setWallet", newBuyer)
                       //     .then((response) => {
                       //       // console.log(response);
                       //     });
@@ -634,7 +634,7 @@ export default UsersList;
 
                       //   //console.log(newOrder);
 
-                      //   axios.post("http://localhost:4000/orders/addOrder", newOrder)
+                      //   axios.post("/backend/orders/addOrder", newOrder)
                       //     .then((response) => {
                       //       //console.log(response);
                       //       navigate("/buyerOrders");
