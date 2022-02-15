@@ -60,7 +60,7 @@ const VendorFoodDashboard = (props) => {
         }
         console.log(fooditems);
         console.log(shopName);
-        axios.post("/backend/FoodItems/getFoodItems", fooditems)
+        axios.post("/api/FoodItems/getFoodItems", fooditems)
             .then((response) => {
                 setFoodItems(response.data);
                 console.log(response.data);
@@ -121,7 +121,7 @@ const VendorFoodDashboard = (props) => {
                                         const fooditem = {
                                             _id: foodItem._id,
                                         }
-                                        axios.post("/backend/FoodItems/deleteFoodItem", fooditem)
+                                        axios.post("/api/FoodItems/deleteFoodItem", fooditem)
                                             .then((response) => {
                                                 console.log(response.data);
                                                 window.location.reload();

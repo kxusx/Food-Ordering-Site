@@ -122,7 +122,7 @@ const VendorAddFoodItems = (props) => {
                 rating: 0,     
             };
             console.log(data);
-            axios.post("/backend/foodItems/addFoodItems", data)
+            axios.post("/api/foodItems/addFoodItems", data)
                 .then(res => {
                     alert("Food Item Added");
                     //navigate("/vendor/foodItems");

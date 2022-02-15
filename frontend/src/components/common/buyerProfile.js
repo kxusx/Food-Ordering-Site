@@ -59,7 +59,7 @@ const BuyerProfile = (props) => {
         const o ={
             email:email,
         }
-        axios.post("/backend/buyer/getUser", o)
+        axios.post("/api/buyer/getUser", o)
         .then(res => {
             console.log(res.data);
             setProfileDetails(res.data);
@@ -85,7 +85,7 @@ const BuyerProfile = (props) => {
             };
 
             axios
-                .post("/backend/buyer/changeProfile", newBuyer)
+                .post("/api/buyer/changeProfile", newBuyer)
                 .then((response) => {
                     alert("Update");
                     console.log(response.data);

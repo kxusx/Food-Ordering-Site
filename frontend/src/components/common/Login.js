@@ -38,7 +38,7 @@ export default function SignIn() {
                 password: password
             };
             axios
-                .post("/backend/buyer/login", newBuyer)
+                .post("/api/buyer/login", newBuyer)
                 .then((response) => {
                     localStorage.setItem("id",response.data._id);
                     localStorage.setItem("name",response.data.name);
@@ -64,7 +64,7 @@ export default function SignIn() {
             };
     
             axios
-                .post("/backend/vendor/login", newVendor)
+                .post("/api/vendor/login", newVendor)
                 .then((response) => {
                     localStorage.setItem("id",response.data._id);
                     localStorage.setItem("managerName",response.data.managerName);

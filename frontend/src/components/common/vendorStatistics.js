@@ -44,7 +44,7 @@ const VendorStatistics = (props) => {
         }
         let x = 0, y = 0, z = 0;
         let arr = [];
-        axios.post("/backend/vendor/getVendor", v)
+        axios.post("/api/vendor/getVendor", v)
             .then(res => {
                 setVendor(res.data);
                 setShopName(res.data.shopName);
@@ -56,7 +56,7 @@ const VendorStatistics = (props) => {
                 }
 
                 console.log(newOrder);
-                axios.post("/backend/orders/getOrderBasedOnShop", newOrder)
+                axios.post("/api/orders/getOrderBasedOnShop", newOrder)
                     .then((response) => {
 
                         setOrders(response.data);

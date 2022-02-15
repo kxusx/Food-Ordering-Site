@@ -42,7 +42,7 @@ const BuyerOrders = (props) => {
           email: email
         };
     
-        axios.post("/backend/buyer/getWallet", newBuyer)
+        axios.post("/api/buyer/getWallet", newBuyer)
           .then((response) => {
             setInWallet(response.data.wallet);
             temp = response.data.wallet;
@@ -55,7 +55,7 @@ const BuyerOrders = (props) => {
         const newOrder={
             email:buyerEmail,
         }
-        axios.post("/backend/orders/getOrder", newOrder)
+        axios.post("/api/orders/getOrder", newOrder)
             .then((response) => {
                 setOrders(response.data);
                 console.log(response.data);

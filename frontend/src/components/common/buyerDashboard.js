@@ -118,7 +118,7 @@ const UsersList = (props) => {
       email: email
     };
       setOpen(false);
-    axios.post("/backend/buyer/getWallet", newBuyer)
+    axios.post("/api/buyer/getWallet", newBuyer)
       .then((response) => {
         setInWallet(response.data.wallet);
         temp = response.data.wallet;
@@ -129,7 +129,7 @@ const UsersList = (props) => {
 
   useEffect(() => {
     axios
-      .get("/backend/foodItems")
+      .get("/api/foodItems")
       .then((response) => {
         setFoodItems(response.data);
         setPermFoodItems(response.data);
@@ -310,11 +310,11 @@ const UsersList = (props) => {
       email: email,
       wallet: inWallet - totalPrice
     };
-    axios.post("/backend/buyer/setWallet", newBuyer)
+    axios.post("/api/buyer/setWallet", newBuyer)
       .then((response) => {
         // console.log(response);
       });
-    axios.post("/backend/orders/addOrder", newOrder)
+    axios.post("/api/orders/addOrder", newOrder)
                           .then((response) => {
                             console.log(response);
                             navigate("/buyerOrders");
@@ -614,7 +614,7 @@ export default UsersList;
                       //     wallet: inWallet - foodItem.price
                       //   };
 
-                      //   axios.post("/backend/buyer/setWallet", newBuyer)
+                      //   axios.post("/api/buyer/setWallet", newBuyer)
                       //     .then((response) => {
                       //       // console.log(response);
                       //     });
@@ -634,7 +634,7 @@ export default UsersList;
 
                       //   //console.log(newOrder);
 
-                      //   axios.post("/backend/orders/addOrder", newOrder)
+                      //   axios.post("/api/orders/addOrder", newOrder)
                       //     .then((response) => {
                       //       //console.log(response);
                       //       navigate("/buyerOrders");

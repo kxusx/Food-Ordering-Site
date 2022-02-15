@@ -53,7 +53,7 @@ const VendorOrdersList = (props) => {
         const newOrder = {
             shopName: shopName,
         }
-        axios.post("/backend/orders/getOrderBasedOnShop", newOrder)
+        axios.post("/api/orders/getOrderBasedOnShop", newOrder)
             .then((response) => {
                 setOrders(response.data);
 
@@ -138,7 +138,7 @@ const VendorOrdersList = (props) => {
 
                                         }
                                         console.log(newOrder);
-                                        axios.post("/backend/orders/updateOrder", newOrder)
+                                        axios.post("/api/orders/updateOrder", newOrder)
                                             .then((response) => {
                                                 console.log(response.data);
                                                 // setOrders(response.data);
@@ -155,7 +155,7 @@ const VendorOrdersList = (props) => {
                                                     status: "REJECTED",
                                                 }
                                                 console.log(newOrder);
-                                                axios.post("/backend/orders/updateOrder", newOrder)
+                                                axios.post("/api/orders/updateOrder", newOrder)
                                                     .then((response) => {
                                                         console.log(response.data);
                                                         // setOrders(response.data);
@@ -170,7 +170,7 @@ const VendorOrdersList = (props) => {
                                                 // const o = {
                                                 //     email: buyerEmail,
                                                 // }
-                                                // axios.post("/backend/buyer/getWallet", o)
+                                                // axios.post("/api/buyer/getWallet", o)
                                                 //     .then((response) => {
                                                 //         walletBalance = response.data.wallet;
                                                 //         setWallet(walletBalance);
@@ -184,7 +184,7 @@ const VendorOrdersList = (props) => {
                                                     wallet: parseInt(orderCost),
                                                 }
                                                 console.log(newUser);
-                                                axios.post("/backend/buyer/addToWallet", newUser)
+                                                axios.post("/api/buyer/addToWallet", newUser)
                                                     .then((response) => {
                                                         console.log(response.data);
                                                         // setOrders(response.data);
