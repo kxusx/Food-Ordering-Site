@@ -12,4 +12,3 @@ It also allows for keeping check on orders placed at the shop and moving the ite
 Vendor can also edit his profile
 Vendor can also look at the statistics of his shop
 
-I have removed the node modules of both backend and frontend folders. Since only my fuse.js exists(very small size) in a node_modules outside both frontend and backend i am keeping it.
